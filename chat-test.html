@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>聊天反应力测试</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    min-height: 100vh;
+    color: #333;
+    overflow-x: hidden;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .page.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    padding: 28px 22px;
+    margin-bottom: 16px;
+  }
+
+  .start-icon {
+    font-size: 64px;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+  .start-desc {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+
+  .start-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #fff 0%, #f0f0ff 100%);
+    color: #667eea;
+    border: none;
+    border-radius: 50px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .start-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #fff, #f0f0ff);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .question-number {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .question-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .option {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .option:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .option-letter {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    margin-right: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .result-type {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    margin-bottom: 6px;
+  }
+
+  .result-tagline {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 15px;
+  }
+
+  .result-score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .score-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .score-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-icon { font-size: 20px; }
+
+  .section-content {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14.5px;
+    line-height: 1.8;
+  }
+
+  .section-content p { margin-bottom: 10px; }
+  .section-content p:last-child { margin-bottom: 0; }
+
+  .strength-item, .weak-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+
+  .strength-icon { color: #7fff7f; }
+  .weak-icon { color: #ffb86c; }
+
+  .method-card {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .method-title {
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .method-bad {
+    color: rgba(255, 180, 180, 0.95);
+    font-size: 13.5px;
+    margin-bottom: 4px;
+  }
+
+  .method-good {
+    color: rgba(180, 255, 200, 0.95);
+    font-size: 13.5px;
+  }
+
+  .phrase-item {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .phrase-item::before {
+    content: "\2728  ";
+    font-style: normal;
+  }
+
+  .plan-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+
+  .plan-day {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .plan-text {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
+    line-height: 1.7;
+    padding-top: 8px;
+  }
+
+  .tendency-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+    border-radius: 20px;
+    padding: 22px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .tendency-type {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .tendency-desc {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .tendency-phrases {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .deep-section {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+
+  .deep-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .deep-content {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .deep-content p { margin-bottom: 10px; }
+  .deep-content p:last-child { margin-bottom: 0; }
+  .deep-content strong { color: #fff; font-weight: 600; }
+
+  .bottom-btns {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .bottom-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 50px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .bottom-btn.primary {
+    background: linear-gradient(135deg, #fff 0%, #f0f0ff 100%);
+    color: #667eea;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+  }
+
+  .bottom-btn.secondary {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+  .bottom-btn:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<div id="startPage" class="page active">
+  <div style="padding-top: 40px;">
+    <div class="start-icon">💬</div>
+    <h1>聊天反应力测试</h1>
+    <p class="subtitle">测测你是不是一个会聊天的人</p>
+    
+    <div class="glass-card">
+      <div class="start-desc">
+        你有没有遇到过这样的时刻——
+        <br><br>
+        对方说「没事」，你就真的以为没事？
+        <br>
+        对方说「算了」，你就真的停止追问？
+        <br>
+        对方说「你不用管我」，你就真的退开了？
+        <br><br>
+        聊天反应力不是天生的，它是一种可以训练的能力。
+        <br>
+        8道题，测出你的聊天反应力等级。
+      </div>
+      
+      <button class="start-btn" onclick="startQuiz()">✨ 开始测试</button>
+    </div>
+    
+    <p style="text-align:center; color:rgba(255,255,255,0.6); font-size:12px; margin-top:20px;">
+      凭第一直觉作答 · 大约需要2分钟
+    </p>
+  </div>
+</div>
+
+<div id="quizPage" class="page">
+  <div style="padding-top: 20px;">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    
+    <div class="question-number" id="questionNumber">第 1 题 / 共 8 题</div>
+    <div class="question-text" id="questionText"></div>
+    
+    <div id="optionsContainer"></div>
+  </div>
+</div>
+
+<div id="resultPage" class="page">
+  <div id="resultContent"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "朋友对你说「今天真的累死了」，你会怎么回？",
+    options: [
+      { text: "早点睡吧，明天就好了", score: 1 },
+      { text: "怎么了？发生什么事了？", score: 3 },
+      { text: "感觉你今天真的累坏了，抱抱", score: 4 },
+      { text: "累了就休息，别硬撑", score: 2 }
+    ]
+  },
+  {
+    text: "伴侣生气地说「没事，你忙你的」，你会？",
+    options: [
+      { text: "好，那我忙了", score: 1 },
+      { text: "你确定没事吗？感觉你不太高兴", score: 3 },
+      { text: "好，我不逼你说。但如果你其实有点不舒服，也可以慢慢讲", score: 4 },
+      { text: "你又怎么了？我做错什么了？", score: 2 }
+    ]
+  },
+  {
+    text: "同事跟你吐槽工作很烦，你会？",
+    options: [
+      { text: "那你下次注意点就好了", score: 1 },
+      { text: "是啊，工作本来就很烦", score: 2 },
+      { text: "听起来你今天受了不少委屈，太不容易了", score: 4 },
+      { text: "跟我说说具体怎么回事？", score: 3 }
+    ]
+  },
+  {
+    text: "朋友说「我是不是很没用」，你会怎么回？",
+    options: [
+      { text: "你想太多了，别这么说自己", score: 2 },
+      { text: "怎么会呢，你明明很厉害啊", score: 2 },
+      { text: "听起来你现在有点低落，发生什么了？", score: 4 },
+      { text: "每个人都有低谷期，很正常", score: 3 }
+    ]
+  },
+  {
+    text: "别人跟你分享一件开心的事，你会？",
+    options: [
+      { text: "嗯，挺好的", score: 1 },
+      { text: "哇，恭喜你啊！", score: 3 },
+      { text: "天呐太棒了！快跟我多说说细节！", score: 4 },
+      { text: "你努力这么久终于有回报了", score: 3 }
+    ]
+  },
+  {
+    text: "对方说「随便吧，我无所谓」，你的理解是？",
+    options: [
+      { text: "他真的无所谓，那就这样吧", score: 1 },
+      { text: "他可能有点不高兴了", score: 3 },
+      { text: "他在表达失望，需要确认一下他真实想法", score: 4 },
+      { text: "他可能在赌气", score: 2 }
+    ]
+  },
+  {
+    text: "聊天冷场了，你会怎么做？",
+    options: [
+      { text: "那就不聊了，挺好的", score: 1 },
+      { text: "找个新话题继续聊", score: 2 },
+      { text: "问问对方刚才说的那件事，把话接回去", score: 3 },
+      { text: "自然地过渡一下，聊聊对方可能感兴趣的事", score: 4 }
+    ]
+  },
+  {
+    text: "对方说「你忙吧，不打扰了」，你会？",
+    options: [
+      { text: "好的，拜拜", score: 1 },
+      { text: "没事没事，不打扰的", score: 2 },
+      { text: "怎么会打扰呢，我正好想找人说说话", score: 3 },
+      { text: "是我刚刚回应得不够及时吗？没关系，你继续说，我在听", score: 4 }
+    ]
+  }
+];
+
+const Q = {
+  low: {
+    type: "聊天反应力初阶",
+    tagline: "你容易「听见字面」，但没听见情绪",
+    about: [
+      "你的聊天反应力还处在比较基础的阶段。你不是冷漠，也不是不会社交，而是你在聊天里经常只接收到了对方说出口的内容，却没有及时识别对方真正想表达的情绪。",
+      "比如对方说「没事」，你可能真的以为没事。对方说「算了」，你可能真的停止追问。对方说「你不用管我」，你可能真的退开。",
+      "但现实聊天里，很多人并不会直接说：「我有点委屈。」「我希望你哄一下我。」「我其实是在试探你在不在意。」「我不是想要建议，我只是想被理解。」",
+      "所以你常常不是输在态度，而是输在没有读懂语境。"
+    ],
+    strengths: [
+      "你不喜欢强行表现自己，也不会故意抢话",
+      "你在聊天里通常比较稳定，不容易过度冒犯别人",
+      "你有基本的社交边界感，只是还需要训练「情绪识别」和「回应层次」"
+    ],
+    weaknesses: [
+      "你容易把聊天理解成「信息交换」，但很多聊天其实是「情绪交换」",
+      "对方表面上在说一件事，实际上是在表达一种感受",
+      "「今天真的累死了」——表面是累，实际可能是想被关心",
+      "「随便吧」——表面是随便，实际可能是失望",
+      "「你忙吧」——表面是让你忙，实际可能是感觉被忽略"
+    ],
+    skill: "你现在最需要练习的不是嘴变甜，而是多问自己一句：对方说这句话，是想让我解决问题，还是想让我理解情绪？",
+    methods: [
+      {
+        title: "方法1：先回应情绪，再回应事情",
+        bad: "「那你下次注意点。」",
+        good: "「听起来你今天真的挺累的，感觉不是一件小事。」"
+      },
+      {
+        title: "方法2：不要急着结束对话",
+        good: "当对方说「没事」的时候，可以补一句：「好，那我不逼你说。但如果你其实有点不舒服，也可以慢慢讲。」"
+      },
+      {
+        title: "方法3：学会递一个安全台阶",
+        good: "当你不知道怎么接时，不要沉默，可以用：「我不确定我有没有理解对，但我感觉你可能有点在意这件事。」"
+      }
+    ],
+    phrases: [
+      "我感觉你说没事，但好像不是真的完全没事。",
+      "你是想让我帮你分析，还是只是想让我听你说说？",
+      "我刚刚可能没接住你的意思，你可以再说一点。",
+      "我不太会安慰人，但我有在认真听。",
+      "这件事让你难受的点，是不是不只是事情本身？"
+    ],
+    plan: [
+      "聊天时不要急着给建议，先复述对方情绪",
+      "看到「没事、算了、随便」时，练习多确认一句",
+      "每天记录一次自己没接住的话",
+      "练习用「听起来你……」开头回应别人",
+      "不要用「你想太多了」否定别人感受",
+      "练习区分「事实」和「情绪」",
+      "选一个信任的人，尝试更认真地回应一次"
+    ],
+    tendency: {
+      type: "反应保守型",
+      desc: "你聊天时偏谨慎，不太会贸然接话。你的好处是稳定、不冒犯，但缺点是容易显得冷淡。",
+      practice: "多给一点情绪回应，不要只停留在字面。",
+      examples: [
+        "我听懂了，你应该挺不容易的。",
+        "我刚刚不是不回，是在想怎么说更合适。"
+      ]
+    },
+    deep: [
+      {
+        title: "为什么你的聊天总是慢半拍？",
+        content: [
+          "如果把聊天拆开来看，其实每一句回应，都经历了四个步骤：<strong>接收信息 → 判断意思 → 推测需求 → 组织回应</strong>。",
+          "而你的问题，并不是最后一步「不会说」，而是前两步就已经开始偏差了。你习惯把别人说的话，当成信息。而聊天高手，更容易把别人说的话，当成情绪。",
+          "举个最简单的例子。别人说：「今天好累。」你的脑子可能会理解成：「他今天工作很多。」于是你会回答：「早点睡。」这句话没有错。但聊天高手的大脑，会先自动出现另一个问题：<strong>「为什么他要告诉我这件事？」</strong>",
+          "于是他们想到的是：是不是今天受委屈了？是不是没人理解？是不是希望有人关心？是不是今天真的撑不住了？所以他们回答的是：「感觉今天把你累坏了。」",
+          "同样一句话。别人收到的感受却完全不同。"
+        ]
+      },
+      {
+        title: "其实，你不是不会聊天。",
+        content: [
+          "你只是更容易相信别人说出口的话。这是一种比较理性的沟通方式。优点是：你不会乱猜。不会过度解读。不会情绪化。但缺点也很明显。现实生活中，大多数人真正表达出来的，只是他们想表达内容的30%-40%。剩下的60%，藏在：停顿里。语气里。省略里。甚至一句「哈哈哈哈」里。",
+          "如果一直只回应字面意思，你会慢慢发现：很多人会觉得：「他好像没懂我。」但其实，你已经很认真了。只是你回应的是内容，不是情绪。"
+        ]
+      },
+      {
+        title: "为什么有的人总觉得你「有点冷」？",
+        content: [
+          "这其实是一种沟通误差。你表达的是：「我在认真解决问题。」别人接收到的是：「他没有理解我的感受。」于是双方都会觉得委屈。你觉得：「我已经帮你想办法了。」别人觉得：「我根本不是来找办法的。」",
+          "这种错位，会越来越多。慢慢形成：关系越来越客气。聊天越来越短。别人越来越少主动找你。不是因为你不好。而是因为每一次聊天，都少了一点「情绪回应」。"
+        ]
+      },
+      {
+        title: "一个很多人不知道的心理学现象",
+        content: [
+          "人在情绪激动的时候，大脑真正想获得的，并不是建议。而是<strong>确认。</strong>确认：「我的感受是合理的。」确认：「有人理解我。」确认：「我不是一个人。」",
+          "所以很多时候，一句：「我懂。」比十条建议更有效。不是因为建议没价值。而是因为：<strong>人在没有被理解之前，很难真正听进去建议。</strong>"
+        ]
+      },
+      {
+        title: "未来三个月，你最值得练的一件事",
+        content: [
+          "以后聊天时，先不要急着回答。试着在心里问自己一句：<strong>「如果这句话不是为了告诉我信息，那它是为了表达什么？」</strong>坚持练习一个月。你会发现：别人开始更愿意跟你聊天。聊天越来越轻松。关系也越来越自然。因为真正让人舒服的聊天，从来不是回答得最快。而是回答到了别人心里。",
+          "聊天反应力不是天生情商，也不是嘴快。它是一种可以训练的能力。你现在的结果，不是给你贴标签，而是告诉你：你下一步最值得提升的聊天能力在哪里。"
+        ]
+      }
+    ]
+  },
+  mid: {
+    type: "聊天反应力中阶",
+    tagline: "你能接住情绪，但容易接得不够稳",
+    about: [
+      "你已经具备了基本的聊天敏感度，能够感受到对方的情绪变化，也会尝试去回应。你不是那种「话题杀手」，甚至很多人觉得你还挺好聊的。",
+      "但有时候你会发现，自己明明已经很努力了，对方好像还是觉得差点什么。或者你能接住情绪，但不知道怎么把对话推得更深。又或者，你偶尔会用力过猛，反而让对方觉得有点尴尬。",
+      "这是聊天能力提升的必经阶段——你已经跨过了「听不见情绪」的门槛，但还需要练习「如何精准回应」。"
+    ],
+    strengths: [
+      "你能敏锐地感受到对方的情绪变化",
+      "你有共情能力，愿意站在对方角度思考",
+      "你不会只说自己的事，懂得倾听和回应",
+      "跟你聊天通常不会冷场"
+    ],
+    weaknesses: [
+      "有时候你会用力过猛，反而显得不自然",
+      "你能接住情绪，但不一定能把对话推深",
+      "遇到比较微妙的情绪，你可能会犹豫怎么回",
+      "偶尔会因为想太多，反而错过最佳回应时机"
+    ],
+    skill: "你现在最需要练习的，不是更多的技巧，而是学会「精准」——找到最合适的回应深度，而不是最用力的那个。",
+    methods: [
+      {
+        title: "方法1：回应分三层，选对就好",
+        good: "第一层：简单回应情绪（「太难了吧」）\n第二层：表达理解（「我能理解你的感受」）\n第三层：深入支持（「想不想聊聊为什么」）\n根据关系远近选一层，不要每次都用最深的。"
+      },
+      {
+        title: "方法2：用问题代替评判",
+        bad: "「你别想太多了。」",
+        good: "「这件事让你最难受的是什么？」"
+      },
+      {
+        title: "方法3：沉默也是一种回应",
+        good: "当对方情绪很激动时，不需要急着说话。安静地听，偶尔点点头，比说很多话更有力量。"
+      }
+    ],
+    phrases: [
+      "如果是我遇到这种事，我也会很难受的。",
+      "你不用急着好起来，慢慢来。",
+      "我在听，你慢慢说。",
+      "这件事对你来说应该挺重要的。",
+      "你不说我也能感觉到你有点不一样了。"
+    ],
+    plan: [
+      "练习「恰到好处」的回应——不深不浅刚刚好",
+      "观察聊天高手怎么在不同关系间切换回应深度",
+      "每天复盘一次：哪次回应做得好，哪次可以更好",
+      "练习「少说多听」，让对方多说一点",
+      "学会在合适的时候沉默，不抢话",
+      "尝试跟不同类型的人聊天，练习灵活性",
+      "给自己设一个小目标：每周深度聊天一次"
+    ],
+    tendency: {
+      type: "共情努力型",
+      desc: "你很在意对方的感受，也愿意花心思回应。你的好处是真诚、温暖，但有时候会因为太想做好，反而显得不自然。",
+      practice: "学会放松一点，好的聊天不需要每一句都完美。",
+      examples: [
+        "说实话，我也不知道该说什么，但我陪着你。",
+        "是我，我也会这样的。"
+      ]
+    },
+    deep: [
+      {
+        title: "为什么你明明很努力，对方却觉得不够？",
+        content: [
+          "很多人在聊天中都会遇到这个瓶颈：我已经很努力回应了，为什么对方还是觉得我不够走心？",
+          "答案是：<strong>回应的质量，不是看你说了多少，而是看你说的有没有说到点上。</strong>",
+          "举个例子。对方说：「今天被领导说了一顿。」有人会回一大段：「啊怎么会这样？你领导也太过分了吧？他凭什么说你啊？你明明做得挺好的啊……」这段话看起来很热情，但对方可能反而觉得有点累。",
+          "而高手可能只说一句：「被当众说，确实挺没面子的。」就这一句，对方就会觉得：你懂我。",
+          "因为真正的共情，不是说最多的话，而是精准地说出对方心里没说出口的那句话。"
+        ]
+      },
+      {
+        title: "聊天的三个层次",
+        content: [
+          "第一层：<strong>信息交换</strong>——聊事实、聊事件、聊八卦。",
+          "第二层：<strong>情绪交换</strong>——聊感受、聊心情、聊喜怒哀乐。",
+          "第三层：<strong>深度联结</strong>——聊脆弱、聊恐惧、聊内心深处的想法。",
+          "大多数人的聊天，都停留在第一层。你已经能进入第二层了，这已经超过了很多人。但第三层，需要的不只是技巧，更是信任和安全感。",
+          "你不需要跟每个人都聊到第三层。重要的是：在不同的关系里，选对合适的层次。"
+        ]
+      },
+      {
+        title: "为什么有时候你会觉得聊天很累？",
+        content: [
+          "因为你在「努力聊天」，而不是「享受聊天」。",
+          "你太想给对方留下好印象，太怕自己说错话，太在意对方的反应。这种状态下，你的注意力都在「我表现得好不好」上，反而没法真正听对方在说什么。",
+          "试着把目标从「我要聊好」换成「我想了解这个人」。当你真正对对方感兴趣的时候，聊天会变得轻松很多。因为好的聊天，不是表演，而是探索。"
+        ]
+      },
+      {
+        title: "未来三个月，你的提升方向",
+        content: [
+          "你已经有了很好的基础——你有共情能力，也愿意努力。接下来要练的，是<strong>「精准」和「松弛」</strong>。",
+          "精准：找到最核心的那个情绪点，一句话戳中。",
+          "松弛：不追求每一句都完美，允许自己有「没接好」的时候。",
+          "当你既精准又松弛的时候，你会发现：跟你聊天的人，会越来越多。不是因为你变得多会说，而是因为跟你说话，让人觉得舒服。"
+        ]
+      }
+    ]
+  },
+  high: {
+    type: "聊天反应力高阶",
+    tagline: "你很会聊天，而且让人觉得舒服",
+    about: [
+      "你的聊天反应力已经相当不错了。你能敏锐地捕捉到对方的情绪，也知道怎么回应才让人舒服。跟你聊过天的人，大多都会觉得「跟你说话很舒服」。",
+      "你不是那种话很多的人，但每一句都说到点子上。你懂得什么时候该听，什么时候该说，什么时候该安慰，什么时候该给建议。这种分寸感，是很多人修炼很久都达不到的。",
+      "当然，也不是说你已经完美了。在一些更复杂的场景下，你可能还会犹豫，或者偶尔也会有失手的时候。但总体来说，你的聊天能力已经超过了大多数人。"
+    ],
+    strengths: [
+      "你有很强的情绪感知能力，能快速读懂对方的潜台词",
+      "你懂得分寸感，知道什么时候该进什么时候该退",
+      "你既能倾听，也能适时表达自己",
+      "跟你聊天的人通常会觉得被理解和被尊重"
+    ],
+    weaknesses: [
+      "你可能太习惯照顾别人的情绪，反而忽略了自己",
+      "有时候你会觉得聊天是一种「任务」，而不是享受",
+      "面对特别难聊的人，你也会有点无力感",
+      "你可能不太会主动建立深层联结"
+    ],
+    skill: "你现在最需要练习的，不是技巧层面的提升，而是学会在聊天中「做自己」——既照顾别人，也不委屈自己。",
+    methods: [
+      {
+        title: "方法1：设立你的聊天边界",
+        good: "不想聊的时候，可以温柔地拒绝。比如：「我今天有点累，改天再好好聊可以吗？」好的关系，不会因为你偶尔的疲惫就断掉。"
+      },
+      {
+        title: "方法2：练习分享自己的脆弱",
+        good: "高阶的聊天，不是永远接住对方，而是也能适当地暴露自己。分享一点你的不完美，反而会让关系更近。"
+      },
+      {
+        title: "方法3：从「会聊天」到「会选人聊天」",
+        good: "你已经很会聊天了，接下来要练的不是跟所有人都聊得来，而是找到那些真正值得你花时间的人。你的聊天能力很珍贵，要留给值得的人。"
+      }
+    ],
+    phrases: [
+      "跟你聊天真的很舒服。",
+      "你说的我都懂，我也有过类似的感受。",
+      "其实我也不太确定，但我想听听你的想法。",
+      "我今天状态不太好，你不介意吧？",
+      "谢谢你愿意跟我说这些。"
+    ],
+    plan: [
+      "练习温柔地拒绝，设立聊天边界",
+      "在信任的人面前，试着暴露一点脆弱",
+      "减少无效社交，把时间留给真正重要的人",
+      "练习深度聊天，而不是泛泛而谈",
+      "从「让别人舒服」到「让彼此都舒服」",
+      "学习聊天中的「主动权」，不是被动回应",
+      "找到一两个可以深度联结的朋友"
+    ],
+    tendency: {
+      type: "舒服陪伴型",
+      desc: "你是那种让人相处起来很舒服的人。你不抢话，也不冷场，分寸感拿捏得刚刚好。很多人会把你当成可以倾诉的对象。",
+      practice: "记得也要照顾好自己的情绪，你的感受同样重要。",
+      examples: [
+        "我懂，我也经历过。",
+        "你愿意说，我就愿意听。"
+      ]
+    },
+    deep: [
+      {
+        title: "会聊天的人，都有一个共同特点",
+        content: [
+          "那就是：<strong>他们真的对人感兴趣。</strong>",
+          "很多人以为会聊天的人是嘴甜、会来事、段子多。但实际上，真正让人觉得「会聊天」的人，靠的不是说得多，而是听得认真。",
+          "他们会真心地好奇：这个人为什么会这么想？他经历过什么？他的感受是什么？",
+          "当你对一个人真的感兴趣的时候，你的眼神、你的回应、你问的问题，都会不一样。对方能感受到。这种「被看见」的感觉，比任何技巧都有效。",
+          "你能走到高阶，说明你内心本身就有这种对人的好奇和善意。这是最珍贵的天赋。"
+        ]
+      },
+      {
+        title: "为什么会聊天的人反而容易累？",
+        content: [
+          "因为你太能感知了。",
+          "别人说一句话，你能立刻感受到里面的情绪。别人有一点不开心，你马上就能察觉。这种敏感度，让你很会聊天，但也让你很容易「吸收」别人的情绪。",
+          "所以你可能经常有这种感觉：跟负能量的人聊完天，你自己也会心情不好。或者聊了一天下来，你觉得特别累，想要一个人待着。",
+          "这不是缺点，这是高敏感人群的正常反应。你需要做的，是学会建立情绪边界——我能理解你，但你的情绪不是我的责任。"
+        ]
+      },
+      {
+        title: "下一步：从「会聊天」到「会独处」",
+        content: [
+          "听起来有点矛盾，但事实是：越会聊天的人，越需要独处的时间。",
+          "因为跟人打交道对你来说是「放电」的过程。你需要独处来「充电」。不要因为自己需要独处就觉得奇怪，也不要勉强自己一直社交。",
+          "最好的状态是：既能在人群中自在，也能在独处中安然。知道什么时候该社交，知道什么时候该退回自己的小世界。",
+          "你的聊天能力已经很好了，接下来要练的，是跟自己相处的能力。"
+        ]
+      }
+    ]
+  },
+  master: {
+    type: "聊天反应力大师",
+    tagline: "你是那种天生就让人想靠近的人",
+    about: [
+      "恭喜你！你的聊天反应力已经达到了大师级水平。你不仅能精准地捕捉情绪，还能在不同的关系中游刃有余地切换。跟你说话，对很多人来说是一种享受。",
+      "你有一种特别的能力：能让每一个跟你聊天的人，都觉得自己是特别的。你不会居高临下，也不会刻意讨好，你就是自然地、真诚地在那里。这种气场，是很多人模仿都模仿不来的。",
+      "但要提醒你的是：能力越大，责任越大。你的聊天能力可以成就很多关系，但也可能吸引很多消耗你的人。学会选择、学会保护自己的能量，对你来说同样重要。"
+    ],
+    strengths: [
+      "你有极强的情绪感知力和共情能力",
+      "你能在任何关系中找到舒服的相处方式",
+      "你既能温暖别人，也能保持自己的边界",
+      "你有让人安心的力量，别人愿意对你敞开心扉"
+    ],
+    weaknesses: [
+      "你可能会吸引很多需要你的人，但不一定都是滋养你的人",
+      "太高的共情能力有时候会让你过度承担别人的情绪",
+      "你可能习惯了照顾别人，偶尔会忘记自己也需要被照顾",
+      "少数时候你可能会觉得孤独——因为能懂你的人不多"
+    ],
+    skill: "对你来说，聊天技巧已经不重要了。更重要的是：如何保护好自己的能量，以及如何用这份能力去做更有价值的事。",
+    methods: [
+      {
+        title: "方法1：建立能量管理系统",
+        good: "你的共情能力是一种宝贵的资源，但不是无限的。学会区分：哪些人值得你花能量，哪些只是来消耗你的。保护好自己，你才能帮助更多人。"
+      },
+      {
+        title: "方法2：从「倾听者」到「引导者」",
+        good: "你已经很会听了。下一步可以尝试：在合适的时候，引导对方看到不一样的角度。不是给建议，而是帮对方自己找到答案。"
+      },
+      {
+        title: "方法3：找到你的「使命」",
+        good: "这么强的聊天能力和共情力，一定有用武之地。无论是做心理咨询、做社群、做内容创作，还是只是做朋友们的「人生导师」，找到那个让你觉得有价值的出口。"
+      }
+    ],
+    phrases: [
+      "你比你想象的更勇敢。",
+      "这件事可能没有标准答案，但你已经做得很好了。",
+      "有时候，承认自己累了，也是一种勇敢。",
+      "我相信你有自己的节奏。",
+      "能遇见你，我觉得很幸运。"
+    ],
+    plan: [
+      "梳理你的社交圈，保留滋养你的关系",
+      "找到你的聊天能力可以发挥价值的地方",
+      "学习高级的沟通技巧：非暴力沟通、教练式对话",
+      "建立你的「充电」方式，保持能量平衡",
+      "帮助值得帮助的人，但不拯救任何人",
+      "在关系中保持平等，不卑不亢",
+      "用你的能力，创造更多美好的连接"
+    ],
+    tendency: {
+      type: "天然治愈型",
+      desc: "你有一种天生的治愈力。跟你聊完天，别人通常会觉得心情好了很多。你就像一个情绪的安全港湾，让人忍不住想靠近。",
+      practice: "记得偶尔也让自己靠一靠别人，你不用一直坚强。",
+      examples: [
+        "我在。",
+        "没事的，有我呢。"
+      ]
+    },
+    deep: [
+      {
+        title: "你这种人，天生就容易被人喜欢",
+        content: [
+          "不是因为你有多会说，而是因为你有一种让人安心的气质。",
+          "这种气质来自哪里？来自你的真诚。来自你的不评判。来自你真的在听，真的在关心。",
+          "在这个人人都想表达自己的时代，愿意认真听别人说话的人，太稀缺了。而你不仅听，还能听懂。这就更稀缺了。",
+          "所以你会发现，很多人愿意跟你说心里话，很多人会把你当成特别的朋友。这不是你刻意争取来的，是你自然而然吸引来的。"
+        ]
+      },
+      {
+        title: "但你要小心：别让你的善良变成软肋",
+        content: [
+          "会聊天、共情强的人，很容易遇到一个问题：<strong>被消耗。</strong>",
+          "因为你太能理解了，太能包容了，太愿意帮忙了。有些人就会不自觉地把你当成情绪垃圾桶，或者无限度地向你索取。",
+          "你可能不好意思拒绝，因为你觉得拒绝会伤害对方。但你要知道：你的能量是有限的。你照顾不了所有人。",
+          "真正值得的关系，是互相滋养的，不是单方面消耗的。学会温柔地拒绝，不是冷漠，而是对自己的负责，也是对关系的负责。"
+        ]
+      },
+      {
+        title: "你的使命，是让更多人被看见",
+        content: [
+          "你有这样的能力，就有这样的使命——让更多人感受到被理解。",
+          "这个世界上有太多人，终其一生都没有被真正看见过。他们有很多话想说，但没有人认真听。他们有很多感受，但没有人懂。",
+          "而你，可以成为那个「看见」他们的人。",
+          "不一定是做心理咨询师或者情感博主。哪怕只是在朋友失意的时候认真听一听，在家人困惑的时候耐心聊一聊，在陌生人需要的时候说一句温暖的话。",
+          "这些看似微小的瞬间，可能就是别人撑下去的力量。",
+          "这就是你的超能力。请温柔地使用它。"
+        ]
+      }
+    ]
+  }
+};
+
+let currentQuestion = 0;
+let totalScore = 0;
+
+function startQuiz() {
+  document.getElementById('startPage').classList.remove('active');
+  document.getElementById('quizPage').classList.add('active');
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[currentQuestion];
+  document.getElementById('questionNumber').textContent = '第 ' + (currentQuestion + 1) + ' 题 / 共 ' + questions.length + ' 题';
+  document.getElementById('questionText').textContent = q.text;
+  document.getElementById('progressFill').style.width = (currentQuestion / questions.length * 100) + '%';
+  
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  
+  q.options.forEach(function(opt, idx) {
+    const div = document.createElement('div');
+    div.className = 'option';
+    const letter = String.fromCharCode(65 + idx);
+    div.innerHTML = '<span class="option-letter">' + letter + '</span>' + opt.text;
+    div.onclick = function() { selectOption(idx); };
+    container.appendChild(div);
+  });
+}
+
+function selectOption(idx) {
+  totalScore += questions[currentQuestion].options[idx].score;
+  currentQuestion++;
+  
+  if (currentQuestion >= questions.length) {
+    document.getElementById('progressFill').style.width = '100%';
+    setTimeout(showResult, 300);
+  } else {
+    showQuestion();
+  }
+}
+
+function getResultKey(score) {
+  if (score <= 14) return 'low';
+  if (score <= 22) return 'mid';
+  if (score <= 28) return 'high';
+  return 'master';
+}
+
+function showResult() {
+  document.getElementById('quizPage').classList.remove('active');
+  document.getElementById('resultPage').classList.add('active');
+  
+  const key = getResultKey(totalScore);
+  const r = Q[key];
+  const maxScore = 32;
+  
+  let html = '';
+  
+  html += '<div class="result-header" style="padding-top: 30px;">';
+  html += '<div style="font-size: 56px; text-align:center; margin-bottom: 12px;">💬✨</div>';
+  html += '<div class="result-type">' + r.type + '</div>';
+  html += '<div class="result-tagline">' + r.tagline + '</div>';
+  html += '<div class="result-score">';
+  html += '<div class="score-circle">' + totalScore + '</div>';
+  html += '<div><span class="score-label">/ ' + maxScore + ' 分</span></div>';
+  html += '</div></div>';
+  
+  html += '<div class="glass-card">';
+  html += '<div class="section-title"><span class="section-icon">🌟</span> 关于你</div>';
+  html += '<div class="section-content">';
+  r.about.forEach(function(p) {
+    html += '<p>' + p + '</p>';
+  });
+  html += '</div></div>';
+  
+  html += '<div class="glass-card">';
+  html += '<div class="section-title"><span class="section-icon">✅</span> 你的优势</div>';
+  r.strengths.forEach(function(s) {
+    html += '<div class="strength-item"><span class="strength-icon">✓</span><span>' + s + '</span></div>';
+  });
+  html += '</div>';
+  
+  html += '<div class="glass-card">';
+  html += '<div class="section-title"><span class="section-icon">⚠️</span> 你的盲区</div>';
+  r.weaknesses.forEach(function(s) {
+    html += '<div class="weak-item"><span class="weak-icon">!</span><span>' + s + '</span></div>';
+  });
+  html += '</div>';
+  
+  html += '<div class="glass-card">';
+  html += '<div class="section-title"><span class="section-icon">🎯</span> 你最需要练习的能力</div>';
+  html += '<div class="section-content">' + r.skill + '</div>';
+  html += '</div>';
+  
+  html += '<div class="glass-card">';
+  html += '<div class="section-title"><span class="section-icon">📚</span> 3个具体提升方法</div>';
+  r.methods.forEach(function(m) {
+    html += '<div class="method-card">';
+    html += '<div class="method-title">' + m.title + '</div>';
+    if (m.bad) {
+      html += '<div class="method-bad">✗ ' + m.bad + '</div>';
+    }
+    html += '<div class="method-good">✓ ' + m.good + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  
+  html += '<div class="glass-card">';
+  html += '<div class="section-title"><span class="section-icon">💬</span> 你的专属话术模板</div>';
+  r.phrases.forEach(function(p) {
+    html += '<div class="phrase-item">' + p + '</div>';
+  });
+  html += '</div>';
+  
+  html += '<div class="glass-card">';
+  html += '<div class="section-title"><span class="section-icon">📅</span> 7天聊天反应力训练计划</div>';
+  r.plan.forEach(function(item, i) {
+    html += '<div class="plan-item">';
+    html += '<div class="plan-day">' + (i + 1) + '</div>';
+    html += '<div class="plan-text">第' + (i + 1) + '天：' + item + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  
+  html += '<div class="tendency-card">';
+  html += '<div class="tendency-type">你的聊天倾向：' + r.tendency.type + '</div>';
+  html += '<div class="tendency-desc">' + r.tendency.desc + '</div>';
+  html += '<div style="color:rgba(255,255,255,0.9); font-size:14px; margin-bottom:10px;">';
+  html += '<strong>你需要练习：</strong>' + r.tendency.practice + '</div>';
+  html += '<div class="tendency-phrases">';
+  r.tendency.examples.forEach(function(p) {
+    html += '<div style="color:#fff; font-size:13.5px; line-height:1.8; font-style:italic;">「' + p + '」</div>';
+  });
+  html += '</div></div>';
+  
+  html += '<div class="section-title" style="margin-top: 20px; margin-bottom: 14px;">';
+  html += '<span class="section-icon">🔍</span> 深度解析</div>';
+  
+  r.deep.forEach(function(section) {
+    html += '<div class="deep-section">';
+    html += '<div class="deep-title">' + section.title + '</div>';
+    html += '<div class="deep-content">';
+    section.content.forEach(function(p) {
+      html += '<p>' + p + '</p>';
+    });
+    html += '</div></div>';
+  });
+  
+  html += '<div class="bottom-btns">';
+  html += '<button class="bottom-btn secondary" onclick="restart()">🔄 重新测试</button>';
+  html += '<button class="bottom-btn primary" onclick="shareResult()">📤 分享结果</button>';
+  html += '</div>';
+  
+  document.getElementById('resultContent').innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function restart() {
+  currentQuestion = 0;
+  totalScore = 0;
+  document.getElementById('resultPage').classList.remove('active');
+  document.getElementById('startPage').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function shareResult() {
+  alert('截图保存结果页，分享给朋友吧~ ✨');
+}
+</script>
+
+</body>
+</html>
