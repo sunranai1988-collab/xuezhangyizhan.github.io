@@ -185,6 +185,28 @@
     line-height: 1.5;
   }
 
+  /* 返回上一题按钮 */
+  .prev-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: transparent;
+    color: #666680;
+    border: 1px solid #2a2a4a;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  .prev-btn:active {
+    transform: scale(0.97);
+    background: #1a1a2e;
+    color: #ffffff;
+  }
+
   /* ===== 结果页 ===== */
   .result-container {
     max-width: 480px;
@@ -533,6 +555,7 @@
 <script>
 var currentQuestion = 0;
 var answers = [];
+var scores = [];
 var totalScore = 0;
 
 var questions = [
@@ -557,7 +580,7 @@ var questions = [
     options: [
       { text: "男女主甜宠", score: 3 },
       { text: "双男主/双女主", score: 5 },
-      { text: "只要chemistry好就行", score: 1 }
+      { text: "只要感觉对就行，不分性别", score: 1 }
     ]
   },
   {
@@ -677,8 +700,8 @@ var Q = {
     type: "具有多元气质的真爱追求者",
     tagline: "你的心动根本不正常，因为太自由了",
     about: [
-      "你是一个离谱的存在——你渴望吸引异性，但又深深被同性吸引。",
-      "你谈恋爱不考虑性别，甚至不考虑物种，只要让你产生好感，你都会想要依恋。",
+      "你是一个特别的存在——你既被异性吸引，又被同性深深吸引。",
+      "你谈恋爱不考虑性别，只看重那个人的灵魂和感觉。",
       "你的心动模式是真正意义上的「爱无边界」。"
     ],
     data: [
@@ -703,6 +726,7 @@ function getResultKey(score) {
 function startQuiz() {
   currentQuestion = 0;
   answers = [];
+  scores = [];
   totalScore = 0;
   document.getElementById('startPage').classList.remove('active');
   document.getElementById('quizPage').classList.add('active');
@@ -730,6 +754,12 @@ function showQuestion() {
   });
 
   html += '</div>';
+
+  // 第一题不显示返回按钮
+  if (currentQuestion > 0) {
+    html += '<button class="prev-btn" onclick="goToPrevQuestion()">← 返回上一题</button>';
+  }
+
   document.getElementById('questionContent').innerHTML = html;
 }
 
@@ -738,7 +768,13 @@ function selectOption(index, score) {
   options.forEach(function(el) { el.classList.remove('selected'); });
   options[index].classList.add('selected');
 
+  // 如果之前答过这题，先减去旧分数
+  if (scores[currentQuestion] !== undefined) {
+    totalScore -= scores[currentQuestion];
+  }
+
   answers[currentQuestion] = index;
+  scores[currentQuestion] = score;
   totalScore += score;
 
   setTimeout(function() {
@@ -749,6 +785,19 @@ function selectOption(index, score) {
       showResult();
     }
   }, 300);
+}
+
+function goToPrevQuestion() {
+  // 减去当前题的分数（如果答过）
+  if (scores[currentQuestion] !== undefined) {
+    totalScore -= scores[currentQuestion];
+    scores[currentQuestion] = undefined;
+    answers[currentQuestion] = undefined;
+  }
+  // 返回上一题
+  currentQuestion--;
+  if (currentQuestion < 0) currentQuestion = 0;
+  showQuestion();
 }
 
 function showResult() {
@@ -826,6 +875,7 @@ function restart() {
   currentQuestion = 0;
   totalScore = 0;
   answers = [];
+  scores = [];
   document.getElementById('resultPage').classList.remove('active');
   document.getElementById('startPage').classList.add('active');
   window.scrollTo(0, 0);
