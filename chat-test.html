@@ -403,10 +403,8 @@
   .share-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 9998;
+    background: rgba(0,0,0,0.6);
+    z-index: 99998;
     display: none;
     align-items: flex-end;
     justify-content: center;
@@ -514,6 +512,67 @@
     color: #b8860b;
     line-height: 1.6;
     border: 1px solid #ffe89c;
+  }
+
+  /* 微信分享引导 */
+  .wechat-share-guide {
+    background: linear-gradient(135deg, #f0fff4 0%, #e6f7ec 100%);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #b7ebc6;
+  }
+  .wechat-guide-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #07c160;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .wechat-guide-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+  }
+  .wechat-guide-item strong {
+    color: #07c160;
+  }
+  .wechat-step {
+    width: 22px; height: 22px;
+    background: #07c160;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .wechat-share-copy {
+    margin-bottom: 14px;
+  }
+  .wechat-copy-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(7, 193, 96, 0.3);
+    transition: all 0.2s ease;
+  }
+  .wechat-copy-btn:active {
+    transform: scale(0.97);
   }
 
   /* 复制成功提示 */
@@ -1216,18 +1275,35 @@ function restart() {
   window.scrollTo(0, 0);
 }
 
+function isWechat() {
+  return /MicroMessenger/i.test(navigator.userAgent);
+}
+
 function shareResult() {
   var r = getResultData();
   var shareText = '我在「聊天反应力测试」中获得了【' + r.title + '】等级！得分：' + totalScore + '分\n\n' +
     r.desc.substring(0, 50) + '...\n\n' +
     '你也来测测吧~\n' + window.location.href;
 
-  var overlay = document.getElementById('shareOverlay');
-  var preview = document.getElementById('sharePreview');
-  preview.innerHTML = '我在「聊天反应力测试」中获得了<strong>【' + r.title + '】</strong>等级！得分：' + totalScore + '分<br>你也来测测吧~';
-  overlay.classList.add('active');
-
   window._shareText = shareText;
+  window._shareResult = r;
+
+  var overlay = document.getElementById('shareOverlay');
+  var normalPanel = document.getElementById('shareNormalPanel');
+  var wechatPanel = document.getElementById('shareWechatPanel');
+  var preview = document.getElementById('sharePreview');
+
+  preview.innerHTML = '我在「聊天反应力测试」中获得了<strong>【' + r.title + '】</strong>等级！得分：' + totalScore + '分<br>你也来测测吧~';
+
+  if (isWechat()) {
+    normalPanel.style.display = 'none';
+    wechatPanel.style.display = 'block';
+  } else {
+    normalPanel.style.display = 'block';
+    wechatPanel.style.display = 'none';
+  }
+
+  overlay.classList.add('active');
 }
 
 function closeShare() {
@@ -1236,6 +1312,10 @@ function closeShare() {
 
 function shareToWechat() {
   var text = window._shareText;
+  if (isWechat()) {
+    showToast('请点击右上角「...」选择发送给朋友');
+    return;
+  }
   if (navigator.share) {
     navigator.share({
       title: '聊天反应力测试',
@@ -1245,12 +1325,17 @@ function shareToWechat() {
   } else {
     copyToClipboard(text);
     showToast('已复制结果！打开微信粘贴给好友即可~');
-    setTimeout(function(){ window.open('weixin://'); }, 800);
+    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
   }
 }
 
 function shareToXHS() {
   var text = window._shareText;
+  if (isWechat()) {
+    copyToClipboard(text);
+    showToast('已复制！点击右上角「...」选择在浏览器打开，再去小红书粘贴');
+    return;
+  }
   copyToClipboard(text);
   showToast('已复制结果！打开小红书私信粘贴即可~');
   setTimeout(function(){ window.location.href = 'xhsdiscover://'; }, 800);
@@ -1258,6 +1343,10 @@ function shareToXHS() {
 
 function shareToMoments() {
   var text = window._shareText;
+  if (isWechat()) {
+    showToast('请点击右上角「...」选择分享到朋友圈');
+    return;
+  }
   if (navigator.share) {
     navigator.share({
       title: '聊天反应力测试',
@@ -1267,7 +1356,7 @@ function shareToMoments() {
   } else {
     copyToClipboard(text);
     showToast('已复制结果！打开朋友圈粘贴即可~');
-    setTimeout(function(){ window.open('weixin://'); }, 800);
+    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
   }
 }
 
@@ -1279,7 +1368,9 @@ function copyResult() {
 
 function copyToClipboard(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).catch(function(){ fallbackCopy(text); });
+    navigator.clipboard.writeText(text).then(function(){
+      showToast('已复制到剪贴板！');
+    }).catch(function(){ fallbackCopy(text); });
   } else {
     fallbackCopy(text);
   }
@@ -1289,10 +1380,18 @@ function fallbackCopy(text) {
   var textarea = document.createElement('textarea');
   textarea.value = text;
   textarea.style.position = 'fixed';
-  textarea.style.opacity = '0';
+  textarea.style.left = '-9999px';
+  textarea.style.top = '0';
+  textarea.style.zIndex = '99999';
   document.body.appendChild(textarea);
+  textarea.focus();
   textarea.select();
-  try { document.execCommand('copy'); } catch(e) {}
+  try {
+    document.execCommand('copy');
+    showToast('已复制到剪贴板！');
+  } catch(e) {
+    showToast('复制失败，请长按文字手动复制');
+  }
   document.body.removeChild(textarea);
 }
 
@@ -1314,27 +1413,54 @@ function showToast(msg) {
 
     <div class="share-preview" id="sharePreview"></div>
 
-    <div class="share-platforms">
-      <div class="share-item" onclick="shareToWechat()">
-        <div class="share-icon wechat">💬</div>
-        <div class="share-label">微信好友</div>
+    <!-- 普通浏览器分享面板 -->
+    <div id="shareNormalPanel">
+      <div class="share-platforms">
+        <div class="share-item" onclick="shareToWechat()">
+          <div class="share-icon wechat">💬</div>
+          <div class="share-label">微信好友</div>
+        </div>
+        <div class="share-item" onclick="shareToXHS()">
+          <div class="share-icon xhs">📕</div>
+          <div class="share-label">小红书私信</div>
+        </div>
+        <div class="share-item" onclick="shareToMoments()">
+          <div class="share-icon moments">🌐</div>
+          <div class="share-label">朋友圈</div>
+        </div>
+        <div class="share-item" onclick="copyResult()">
+          <div class="share-icon copy">📋</div>
+          <div class="share-label">复制文字</div>
+        </div>
       </div>
-      <div class="share-item" onclick="shareToXHS()">
-        <div class="share-icon xhs">📕</div>
-        <div class="share-label">小红书私信</div>
-      </div>
-      <div class="share-item" onclick="shareToMoments()">
-        <div class="share-icon moments">🌐</div>
-        <div class="share-label">朋友圈</div>
-      </div>
-      <div class="share-item" onclick="copyResult()">
-        <div class="share-icon copy">📋</div>
-        <div class="share-label">复制文字</div>
+      <div class="share-tip">
+        💡 提示：点击后会自动复制结果文字，跳转到对应App后粘贴即可分享。如果跳转失败，请手动打开App粘贴。
       </div>
     </div>
 
-    <div class="share-tip">
-      💡 提示：点击后会自动复制结果文字，跳转到对应App后粘贴即可分享。如果跳转失败，请手动打开App粘贴。
+    <!-- 微信内分享面板 -->
+    <div id="shareWechatPanel" style="display:none;">
+      <div class="wechat-share-guide">
+        <div class="wechat-guide-title">📢 分享给朋友</div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">1</span>
+          <span>点击右上角 <strong>「···」</strong></span>
+        </div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">2</span>
+          <span>选择「<strong>发送给朋友</strong>」或「<strong>分享到朋友圈</strong>」</span>
+        </div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">3</span>
+          <span>粘贴结果文字 + 截图分享</span>
+        </div>
+      </div>
+      <div class="wechat-share-copy" onclick="copyResult()">
+        <button class="wechat-copy-btn">📋 一键复制结果文字</button>
+      </div>
+      <div class="share-tip">
+        💡 先复制结果文字，再点右上角分享，粘贴给朋友更方便哦~
+      </div>
     </div>
   </div>
 </div>
