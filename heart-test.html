@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>心动类型测试 | 你的心动正常吗？</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { width: 100%; min-height: 100vh; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #0d0d1a;
+    color: #ffffff;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* 页面容器 */
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    animation: fadeIn 0.4s ease;
+  }
+  .page.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== 开始页 ===== */
+  .start-container {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 60px;
+  }
+
+  .start-icon {
+    font-size: 72px;
+    margin-bottom: 20px;
+  }
+
+  .start-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .start-subtitle {
+    font-size: 16px;
+    color: #ff4d8d;
+    margin-bottom: 40px;
+    font-weight: 600;
+  }
+
+  .start-desc {
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+
+  .start-desc p {
+    font-size: 14px;
+    color: #b0b0c8;
+    margin-bottom: 8px;
+  }
+  .start-desc p:last-child { margin-bottom: 0; }
+  .start-desc strong { color: #ff4d8d; }
+
+  .start-btn {
+    display: inline-block;
+    background: #ff4d8d;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 16px 60px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(255, 77, 141, 0.4);
+    transition: all 0.2s ease;
+  }
+  .start-btn:active { transform: scale(0.96); }
+
+  .start-tip {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #666680;
+  }
+
+  /* ===== 答题页 ===== */
+  .quiz-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: #1a1a2e;
+    border-radius: 2px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #ff4d8d;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    color: #666680;
+    margin-bottom: 24px;
+  }
+
+  .question-num {
+    font-size: 14px;
+    color: #ff4d8d;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option {
+    background: #1a1a2e;
+    border: 2px solid #2a2a4a;
+    border-radius: 14px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .option:active {
+    transform: scale(0.98);
+  }
+  .option.selected {
+    border-color: #ff4d8d;
+    background: #2a1a2e;
+  }
+
+  .option-letter {
+    width: 32px; height: 32px;
+    background: #2a2a4a;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .option.selected .option-letter {
+    background: #ff4d8d;
+  }
+
+  .option-text {
+    font-size: 15px;
+    color: #e0e0f0;
+    line-height: 1.5;
+  }
+
+  /* ===== 结果页 ===== */
+  .result-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding-top: 40px;
+  }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .result-emoji {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+
+  .result-type {
+    font-size: 26px;
+    font-weight: 900;
+    color: #ff4d8d;
+    margin-bottom: 12px;
+  }
+
+  .result-tagline {
+    font-size: 15px;
+    color: #b0b0c8;
+    margin-bottom: 20px;
+  }
+
+  .result-score-box {
+    display: inline-block;
+    background: #ff4d8d;
+    color: #ffffff;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .result-card {
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .result-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ff4d8d;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-card-content {
+    font-size: 14px;
+    color: #d0d0e8;
+    line-height: 1.7;
+  }
+
+  .result-card-content p {
+    margin-bottom: 8px;
+  }
+  .result-card-content p:last-child { margin-bottom: 0; }
+
+  /* 数据条 */
+  .data-bar {
+    margin-bottom: 10px;
+  }
+  .data-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #b0b0c8;
+    margin-bottom: 4px;
+  }
+  .data-bar-label strong { color: #ff4d8d; }
+  .data-bar-track {
+    height: 8px;
+    background: #0d0d1a;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .data-bar-fill {
+    height: 100%;
+    background: #ff4d8d;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+
+  .bottom-btns {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .bottom-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 50px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .bottom-btn.primary {
+    background: #ff4d8d;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(255, 77, 141, 0.3);
+  }
+
+  .bottom-btn.secondary {
+    background: #1a1a2e;
+    color: #ffffff;
+    border: 2px solid #2a2a4a;
+  }
+
+  .bottom-btn:active { transform: scale(0.97); }
+
+  /* ===== 分享弹窗 ===== */
+  .share-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 99998;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    animation: fadeIn 0.25s ease;
+  }
+  .share-overlay.active { display: flex; }
+
+  .share-modal {
+    background: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .share-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .share-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+  }
+  .share-close {
+    position: absolute;
+    right: 0; top: 0;
+    width: 28px; height: 28px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .share-preview {
+    background: #f8f8fc;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    border: 1px dashed #d0d0e0;
+  }
+  .share-preview strong { color: #ff4d8d; }
+
+  .share-platforms {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .share-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .share-item:active { transform: scale(0.92); }
+  .share-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .share-icon.wechat { background: #07c160; }
+  .share-icon.xhs { background: #ff2442; }
+  .share-icon.moments { background: #5ac8fa; }
+  .share-icon.copy { background: #667eea; }
+  .share-label {
+    font-size: 11px;
+    color: #666;
+  }
+
+  .share-tip {
+    background: #fff8e6;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    color: #b8860b;
+    line-height: 1.6;
+    border: 1px solid #ffe89c;
+  }
+
+  /* 微信分享引导 */
+  .wechat-share-guide {
+    background: #f0fff4;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #b7ebc6;
+  }
+  .wechat-guide-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #07c160;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .wechat-guide-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+  }
+  .wechat-guide-item strong { color: #07c160; }
+  .wechat-step {
+    width: 22px; height: 22px;
+    background: #07c160;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .wechat-share-copy { margin-bottom: 14px; }
+  .wechat-copy-btn {
+    width: 100%;
+    padding: 14px;
+    background: #07c160;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(7, 193, 96, 0.3);
+    transition: all 0.2s ease;
+  }
+  .wechat-copy-btn:active { transform: scale(0.97); }
+
+  .copy-toast {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+  }
+  .copy-toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+</style>
+</head>
+<body>
+
+<!-- 开始页 -->
+<div id="startPage" class="page active">
+  <div class="start-container">
+    <div class="start-icon">💘</div>
+    <h1 class="start-title">心动类型测试</h1>
+    <p class="start-subtitle">测完发现你的心动根本不正常</p>
+
+    <div class="start-desc">
+      <p>好奇自己真实取向的姐妹速测！</p>
+      <p>不用纠结标签，跟着内心选就好，<strong>无对错之分</strong></p>
+      <p>性取向从来不是非黑即白</p>
+      <p>✨ 喜欢谁只遵从心动，不用给自己设限</p>
+      <p>🤔 爱不分性别，接纳自己才是终身浪漫</p>
+    </div>
+
+    <button class="start-btn" onclick="startQuiz()">✨ 开始测试</button>
+    <p class="start-tip">凭第一直觉作答 · 大约需要2分钟</p>
+  </div>
+</div>
+
+<!-- 答题页 -->
+<div id="quizPage" class="page">
+  <div class="quiz-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">第 1 题 / 共 10 题</div>
+    <div id="questionContent"></div>
+  </div>
+</div>
+
+<!-- 结果页 -->
+<div id="resultPage" class="page">
+  <div class="result-container" id="resultContent"></div>
+</div>
+
+<script>
+var currentQuestion = 0;
+var answers = [];
+var totalScore = 0;
+
+var questions = [
+  {
+    text: "走进一个派对，你第一眼被吸引的类型是？",
+    options: [
+      { text: "穿着帅气/漂亮的异性", score: 3 },
+      { text: "气质独特的同性", score: 5 },
+      { text: "看眼缘，不分性别", score: 1 }
+    ]
+  },
+  {
+    text: "你做过最离谱的梦是？",
+    options: [
+      { text: "和异性谈恋爱", score: 3 },
+      { text: "和同性有暧昧互动", score: 5 },
+      { text: "和一个看不清脸的人相爱", score: 1 }
+    ]
+  },
+  {
+    text: "追剧时你更容易嗑哪对CP？",
+    options: [
+      { text: "男女主甜宠", score: 3 },
+      { text: "双男主/双女主", score: 5 },
+      { text: "只要chemistry好就行", score: 1 }
+    ]
+  },
+  {
+    text: "如果最好的同性朋友突然表白，你会？",
+    options: [
+      { text: "明确拒绝，只当朋友", score: 3 },
+      { text: "有点心动，会认真考虑", score: 5 },
+      { text: "取决于对方是谁，不看性别", score: 1 }
+    ]
+  },
+  {
+    text: "你觉得哪种颜值最戳你？",
+    options: [
+      { text: "异性长相", score: 3 },
+      { text: "同性长相", score: 5 },
+      { text: "好看就行，不分类", score: 1 }
+    ]
+  },
+  {
+    text: "你更容易被谁的才华吸引？",
+    options: [
+      { text: "异性", score: 3 },
+      { text: "同性", score: 5 },
+      { text: "无所谓性别", score: 1 }
+    ]
+  },
+  {
+    text: "幻想未来伴侣时，画面里是？",
+    options: [
+      { text: "清晰的异性形象", score: 3 },
+      { text: "清晰的同性形象", score: 5 },
+      { text: "模糊的，重要的是感觉", score: 1 }
+    ]
+  },
+  {
+    text: "你对「被掰弯」这件事的看法？",
+    options: [
+      { text: "不可能，我很坚定", score: 3 },
+      { text: "已经弯了/有可能", score: 5 },
+      { text: "不存在弯直，只看人", score: 1 }
+    ]
+  },
+  {
+    text: "如果有一天你发现自己心动了，对方是？",
+    options: [
+      { text: "异性，很正常", score: 3 },
+      { text: "同性，有点意外", score: 5 },
+      { text: "无所谓，心动就是心动", score: 1 }
+    ]
+  },
+  {
+    text: "你觉得爱是什么？",
+    options: [
+      { text: "异性相吸的自然法则", score: 3 },
+      { text: "灵魂的共鸣，跨越性别", score: 5 },
+      { text: "一种感觉，说不清楚", score: 1 }
+    ]
+  }
+];
+
+var Q = {
+  low: {
+    type: "纯粹异性恋者",
+    tagline: "你的心动很「标准」，但也许还有惊喜",
+    about: [
+      "你的心动模式非常清晰——你被异性吸引，而且对此很确定。",
+      "你很少对同性产生暧昧的感觉，你的喜欢是自然而直接的。",
+      "这不代表你不接受多元，只是你的心就是会为异性跳动。"
+    ],
+    data: [
+      { label: "异性恋倾向", value: 92 },
+      { label: "同性恋倾向", value: 8 },
+      { label: "颜性恋", value: 75 },
+      { label: "智性恋", value: 60 }
+    ],
+    potential: "异性恋",
+    bendProb: 12,
+    desc: "你是一个纯粹而坚定的人，你的爱很直接，不需要纠结。"
+  },
+  mid: {
+    type: "偏异性的双性恋者",
+    tagline: "你以为自己只喜欢异性，但其实…",
+    about: [
+      "你主要被异性吸引，但偶尔也会遇到让你心动的同性。",
+      "你不是没可能，只是那个「对的人」出现的概率比较低。",
+      "你的心动是有弹性的，只是还没有被完全激发。"
+    ],
+    data: [
+      { label: "异性恋倾向", value: 72 },
+      { label: "同性恋倾向", value: 28 },
+      { label: "颜性恋", value: 78 },
+      { label: "智性恋", value: 65 }
+    ],
+    potential: "异性为主，偶尔双性",
+    bendProb: 35,
+    desc: "你比想象中更开放，也许某天会出现让你意外的心动。"
+  },
+  high: {
+    type: "真正的双性恋者",
+    tagline: "你的心动不分性别，只看灵魂",
+    about: [
+      "你是一个真正的双性恋者，性别对你来说不是障碍。",
+      "你被异性吸引，也被同性吸引，这种能力很珍贵。",
+      "你的爱是流动的，你的心动是自由的。"
+    ],
+    data: [
+      { label: "异性恋倾向", value: 55 },
+      { label: "同性恋倾向", value: 45 },
+      { label: "颜性恋", value: 80 },
+      { label: "智性恋", value: 70 }
+    ],
+    potential: "泛性恋",
+    bendProb: 58,
+    desc: "你爱人，不爱性别。你的心动是最自由的版本。"
+  },
+  master: {
+    type: "具有多元气质的真爱追求者",
+    tagline: "你的心动根本不正常，因为太自由了",
+    about: [
+      "你是一个离谱的存在——你渴望吸引异性，但又深深被同性吸引。",
+      "你谈恋爱不考虑性别，甚至不考虑物种，只要让你产生好感，你都会想要依恋。",
+      "你的心动模式是真正意义上的「爱无边界」。"
+    ],
+    data: [
+      { label: "异性恋倾向", value: 39 },
+      { label: "同性恋倾向", value: 61 },
+      { label: "颜性恋", value: 82 },
+      { label: "智性恋", value: 67 }
+    ],
+    potential: "泛性恋",
+    bendProb: 42,
+    desc: "你很离谱，但也很真实。接纳自己，就是终身浪漫。"
+  }
+};
+
+function getResultKey(score) {
+  if (score <= 18) return 'low';
+  if (score <= 26) return 'mid';
+  if (score <= 36) return 'high';
+  return 'master';
+}
+
+function startQuiz() {
+  currentQuestion = 0;
+  answers = [];
+  totalScore = 0;
+  document.getElementById('startPage').classList.remove('active');
+  document.getElementById('quizPage').classList.add('active');
+  showQuestion();
+}
+
+function showQuestion() {
+  var q = questions[currentQuestion];
+  var progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  document.getElementById('progressFill').style.width = progress + '%';
+  document.getElementById('progressText').textContent = '第 ' + (currentQuestion + 1) + ' 题 / 共 ' + questions.length + ' 题';
+
+  var html = '';
+  html += '<div class="question-num">问题 ' + (currentQuestion + 1) + '</div>';
+  html += '<div class="question-text">' + q.text + '</div>';
+  html += '<div class="option-list">';
+
+  q.options.forEach(function(opt, i) {
+    var letter = String.fromCharCode(65 + i);
+    html += '<div class="option" onclick="selectOption(' + i + ', ' + opt.score + ')">';
+    html += '<div class="option-letter">' + letter + '</div>';
+    html += '<div class="option-text">' + opt.text + '</div>';
+    html += '</div>';
+  });
+
+  html += '</div>';
+  document.getElementById('questionContent').innerHTML = html;
+}
+
+function selectOption(index, score) {
+  var options = document.querySelectorAll('.option');
+  options.forEach(function(el) { el.classList.remove('selected'); });
+  options[index].classList.add('selected');
+
+  answers[currentQuestion] = index;
+  totalScore += score;
+
+  setTimeout(function() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      showQuestion();
+    } else {
+      showResult();
+    }
+  }, 300);
+}
+
+function showResult() {
+  document.getElementById('quizPage').classList.remove('active');
+  document.getElementById('resultPage').classList.add('active');
+
+  var key = getResultKey(totalScore);
+  var r = Q[key];
+  window._resultData = r;
+
+  var maxScore = 50;
+
+  var html = '';
+  html += '<div class="result-header">';
+  html += '<div class="result-emoji">💘✨</div>';
+  html += '<div class="result-type">' + r.type + '</div>';
+  html += '<div class="result-tagline">' + r.tagline + '</div>';
+  html += '<div class="result-score-box">得分：' + totalScore + ' / ' + maxScore + '</div>';
+  html += '</div>';
+
+  // 关于你
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">🌟 关于你</div>';
+  html += '<div class="result-card-content">';
+  r.about.forEach(function(p) {
+    html += '<p>' + p + '</p>';
+  });
+  html += '</div></div>';
+
+  // 数据分析
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">📊 你的心动数据</div>';
+  html += '<div class="result-card-content">';
+  r.data.forEach(function(d) {
+    html += '<div class="data-bar">';
+    html += '<div class="data-bar-label"><span>' + d.label + '</span><strong>' + d.value + '%</strong></div>';
+    html += '<div class="data-bar-track"><div class="data-bar-fill" style="width:' + d.value + '%"></div></div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // 潜在性取向
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">🔮 潜在性取向</div>';
+  html += '<div class="result-card-content"><p>' + r.potential + '</p></div>';
+  html += '</div>';
+
+  // 被掰弯概率
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">💫 被掰弯概率</div>';
+  html += '<div class="result-card-content">';
+  html += '<div class="data-bar">';
+  html += '<div class="data-bar-label"><span>概率</span><strong>' + r.bendProb + '%</strong></div>';
+  html += '<div class="data-bar-track"><div class="data-bar-fill" style="width:' + r.bendProb + '%"></div></div>';
+  html += '</div>';
+  html += '</div></div>';
+
+  // 总结
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">💬 一句话总结</div>';
+  html += '<div class="result-card-content"><p>' + r.desc + '</p></div>';
+  html += '</div>';
+
+  // 按钮
+  html += '<div class="bottom-btns">';
+  html += '<button class="bottom-btn secondary" onclick="restart()">🔄 重新测试</button>';
+  html += '<button class="bottom-btn primary" onclick="shareResult()">📤 分享结果</button>';
+  html += '</div>';
+
+  document.getElementById('resultContent').innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function restart() {
+  currentQuestion = 0;
+  totalScore = 0;
+  answers = [];
+  document.getElementById('resultPage').classList.remove('active');
+  document.getElementById('startPage').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function isWechat() {
+  return /MicroMessenger/i.test(navigator.userAgent);
+}
+
+function shareResult() {
+  var r = window._resultData || Q[getResultKey(totalScore)];
+  var shareText = '我在「心动类型测试」中获得了【' + r.type + '】！得分：' + totalScore + '分\n\n' +
+    r.tagline + '\n\n' +
+    '你也来测测吧~\n' + window.location.href;
+
+  window._shareText = shareText;
+
+  var overlay = document.getElementById('shareOverlay');
+  var normalPanel = document.getElementById('shareNormalPanel');
+  var wechatPanel = document.getElementById('shareWechatPanel');
+  var preview = document.getElementById('sharePreview');
+
+  preview.innerHTML = '我在「心动类型测试」中获得了<strong>【' + r.type + '】</strong>！得分：' + totalScore + '分<br>你也来测测吧~';
+
+  if (isWechat()) {
+    normalPanel.style.display = 'none';
+    wechatPanel.style.display = 'block';
+  } else {
+    normalPanel.style.display = 'block';
+    wechatPanel.style.display = 'none';
+  }
+
+  overlay.classList.add('active');
+}
+
+function closeShare() {
+  document.getElementById('shareOverlay').classList.remove('active');
+}
+
+function shareToWechat() {
+  var text = window._shareText;
+  if (isWechat()) {
+    showToast('请点击右上角「...」选择发送给朋友');
+    return;
+  }
+  if (navigator.share) {
+    navigator.share({
+      title: '心动类型测试',
+      text: text,
+      url: window.location.href
+    }).catch(function(){});
+  } else {
+    copyToClipboard(text);
+    showToast('已复制结果！打开微信粘贴给好友即可~');
+    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
+  }
+}
+
+function shareToXHS() {
+  var text = window._shareText;
+  if (isWechat()) {
+    copyToClipboard(text);
+    showToast('已复制！点击右上角「...」选择在浏览器打开，再去小红书粘贴');
+    return;
+  }
+  copyToClipboard(text);
+  showToast('已复制结果！打开小红书私信粘贴即可~');
+  setTimeout(function(){ window.location.href = 'xhsdiscover://'; }, 800);
+}
+
+function shareToMoments() {
+  var text = window._shareText;
+  if (isWechat()) {
+    showToast('请点击右上角「...」选择分享到朋友圈');
+    return;
+  }
+  if (navigator.share) {
+    navigator.share({
+      title: '心动类型测试',
+      text: text,
+      url: window.location.href
+    }).catch(function(){});
+  } else {
+    copyToClipboard(text);
+    showToast('已复制结果！打开朋友圈粘贴即可~');
+    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
+  }
+}
+
+function copyResult() {
+  var text = window._shareText;
+  copyToClipboard(text);
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      showToast('已复制到剪贴板！');
+    }).catch(function(){ fallbackCopy(text); });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.top = '0';
+  textarea.style.zIndex = '99999';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    showToast('已复制到剪贴板！');
+  } catch(e) {
+    showToast('复制失败，请长按文字手动复制');
+  }
+  document.body.removeChild(textarea);
+}
+
+function showToast(msg) {
+  var toast = document.getElementById('copyToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+}
+</script>
+
+<!-- 分享弹窗 -->
+<div class="share-overlay" id="shareOverlay" onclick="if(event.target===this)closeShare()">
+  <div class="share-modal">
+    <div class="share-header">
+      <div class="share-title">分享测试结果</div>
+      <button class="share-close" onclick="closeShare()">✕</button>
+    </div>
+
+    <div class="share-preview" id="sharePreview"></div>
+
+    <!-- 普通浏览器分享面板 -->
+    <div id="shareNormalPanel">
+      <div class="share-platforms">
+        <div class="share-item" onclick="shareToWechat()">
+          <div class="share-icon wechat">💬</div>
+          <div class="share-label">微信好友</div>
+        </div>
+        <div class="share-item" onclick="shareToXHS()">
+          <div class="share-icon xhs">📕</div>
+          <div class="share-label">小红书私信</div>
+        </div>
+        <div class="share-item" onclick="shareToMoments()">
+          <div class="share-icon moments">🌐</div>
+          <div class="share-label">朋友圈</div>
+        </div>
+        <div class="share-item" onclick="copyResult()">
+          <div class="share-icon copy">📋</div>
+          <div class="share-label">复制文字</div>
+        </div>
+      </div>
+      <div class="share-tip">
+        💡 提示：点击后会自动复制结果文字，跳转到对应App后粘贴即可分享。
+      </div>
+    </div>
+
+    <!-- 微信内分享面板 -->
+    <div id="shareWechatPanel" style="display:none;">
+      <div class="wechat-share-guide">
+        <div class="wechat-guide-title">📢 分享给朋友</div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">1</span>
+          <span>点击右上角 <strong>「···」</strong></span>
+        </div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">2</span>
+          <span>选择「<strong>发送给朋友</strong>」或「<strong>分享到朋友圈</strong>」</span>
+        </div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">3</span>
+          <span>粘贴结果文字 + 截图分享</span>
+        </div>
+      </div>
+      <div class="wechat-share-copy" onclick="copyResult()">
+        <button class="wechat-copy-btn">📋 一键复制结果文字</button>
+      </div>
+      <div class="share-tip">
+        💡 先复制结果文字，再点右上角分享，粘贴给朋友更方便哦~
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 复制提示 -->
+<div class="copy-toast" id="copyToast"></div>
+
+</body>
+</html>
