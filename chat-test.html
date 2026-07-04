@@ -1161,10 +1161,11 @@ function getResultKey(score) {
 function showResult() {
   document.getElementById('quizPage').classList.remove('active');
   document.getElementById('resultPage').classList.add('active');
-  
+
   const key = getResultKey(totalScore);
   const r = Q[key];
   const maxScore = 32;
+  window._resultData = r;
   
   let html = '';
   
@@ -1280,9 +1281,9 @@ function isWechat() {
 }
 
 function shareResult() {
-  var r = getResultData();
-  var shareText = '我在「聊天反应力测试」中获得了【' + r.title + '】等级！得分：' + totalScore + '分\n\n' +
-    r.desc.substring(0, 50) + '...\n\n' +
+  var r = window._resultData || Q[getResultKey(totalScore)];
+  var shareText = '我在「聊天反应力测试」中获得了【' + r.type + '】等级！得分：' + totalScore + '分\n\n' +
+    r.tagline + '\n\n' +
     '你也来测测吧~\n' + window.location.href;
 
   window._shareText = shareText;
@@ -1293,7 +1294,7 @@ function shareResult() {
   var wechatPanel = document.getElementById('shareWechatPanel');
   var preview = document.getElementById('sharePreview');
 
-  preview.innerHTML = '我在「聊天反应力测试」中获得了<strong>【' + r.title + '】</strong>等级！得分：' + totalScore + '分<br>你也来测测吧~';
+  preview.innerHTML = '我在「聊天反应力测试」中获得了<strong>【' + r.type + '】</strong>等级！得分：' + totalScore + '分<br>你也来测测吧~';
 
   if (isWechat()) {
     normalPanel.style.display = 'none';
