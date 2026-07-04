@@ -398,6 +398,143 @@
   }
 
   .bottom-btn:active { transform: scale(0.97); }
+
+  /* 分享弹窗 */
+  .share-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9998;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    animation: fadeIn 0.25s ease;
+  }
+  .share-overlay.active { display: flex; }
+
+  .share-modal {
+    background: #fff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .share-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .share-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+  }
+  .share-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 28px; height: 28px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .share-preview {
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f0ff 100%);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    border: 1px dashed #d0d0e0;
+  }
+  .share-preview strong {
+    color: #667eea;
+  }
+
+  .share-platforms {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .share-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .share-item:active { transform: scale(0.92); }
+  .share-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .share-icon.wechat { background: linear-gradient(135deg, #07c160 0%, #06ad56 100%); }
+  .share-icon.xhs { background: linear-gradient(135deg, #ff2442 0%, #ff4685 100%); }
+  .share-icon.moments { background: linear-gradient(135deg, #07c160 0%, #5ac8fa 100%); }
+  .share-icon.copy { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+  .share-label {
+    font-size: 11px;
+    color: #666;
+  }
+
+  .share-tip {
+    background: #fff8e6;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    color: #b8860b;
+    line-height: 1.6;
+    border: 1px solid #ffe89c;
+  }
+
+  /* 复制成功提示 */
+  .copy-toast {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+  }
+  .copy-toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 </style>
 </head>
 <body>
@@ -1080,9 +1217,130 @@ function restart() {
 }
 
 function shareResult() {
-  alert('截图保存结果页，分享给朋友吧~ ✨');
+  var r = getResultData();
+  var shareText = '我在「聊天反应力测试」中获得了【' + r.title + '】等级！得分：' + totalScore + '分\n\n' +
+    r.desc.substring(0, 50) + '...\n\n' +
+    '你也来测测吧~\n' + window.location.href;
+
+  var overlay = document.getElementById('shareOverlay');
+  var preview = document.getElementById('sharePreview');
+  preview.innerHTML = '我在「聊天反应力测试」中获得了<strong>【' + r.title + '】</strong>等级！得分：' + totalScore + '分<br>你也来测测吧~';
+  overlay.classList.add('active');
+
+  window._shareText = shareText;
+}
+
+function closeShare() {
+  document.getElementById('shareOverlay').classList.remove('active');
+}
+
+function shareToWechat() {
+  var text = window._shareText;
+  if (navigator.share) {
+    navigator.share({
+      title: '聊天反应力测试',
+      text: text,
+      url: window.location.href
+    }).catch(function(){});
+  } else {
+    copyToClipboard(text);
+    showToast('已复制结果！打开微信粘贴给好友即可~');
+    setTimeout(function(){ window.open('weixin://'); }, 800);
+  }
+}
+
+function shareToXHS() {
+  var text = window._shareText;
+  copyToClipboard(text);
+  showToast('已复制结果！打开小红书私信粘贴即可~');
+  setTimeout(function(){ window.location.href = 'xhsdiscover://'; }, 800);
+}
+
+function shareToMoments() {
+  var text = window._shareText;
+  if (navigator.share) {
+    navigator.share({
+      title: '聊天反应力测试',
+      text: text,
+      url: window.location.href
+    }).catch(function(){});
+  } else {
+    copyToClipboard(text);
+    showToast('已复制结果！打开朋友圈粘贴即可~');
+    setTimeout(function(){ window.open('weixin://'); }, 800);
+  }
+}
+
+function copyResult() {
+  var text = window._shareText;
+  copyToClipboard(text);
+  showToast('已复制到剪贴板！');
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(function(){ fallbackCopy(text); });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(textarea);
+}
+
+function showToast(msg) {
+  var toast = document.getElementById('copyToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function(){ toast.classList.remove('show'); }, 2000);
 }
 </script>
+
+<!-- 分享弹窗 -->
+<div class="share-overlay" id="shareOverlay" onclick="if(event.target===this)closeShare()">
+  <div class="share-modal">
+    <div class="share-header">
+      <div class="share-title">分享测试结果</div>
+      <button class="share-close" onclick="closeShare()">✕</button>
+    </div>
+
+    <div class="share-preview" id="sharePreview"></div>
+
+    <div class="share-platforms">
+      <div class="share-item" onclick="shareToWechat()">
+        <div class="share-icon wechat">💬</div>
+        <div class="share-label">微信好友</div>
+      </div>
+      <div class="share-item" onclick="shareToXHS()">
+        <div class="share-icon xhs">📕</div>
+        <div class="share-label">小红书私信</div>
+      </div>
+      <div class="share-item" onclick="shareToMoments()">
+        <div class="share-icon moments">🌐</div>
+        <div class="share-label">朋友圈</div>
+      </div>
+      <div class="share-item" onclick="copyResult()">
+        <div class="share-icon copy">📋</div>
+        <div class="share-label">复制文字</div>
+      </div>
+    </div>
+
+    <div class="share-tip">
+      💡 提示：点击后会自动复制结果文字，跳转到对应App后粘贴即可分享。如果跳转失败，请手动打开App粘贴。
+    </div>
+  </div>
+</div>
+
+<!-- 复制提示 -->
+<div class="copy-toast" id="copyToast"></div>
 
 </body>
 </html>
