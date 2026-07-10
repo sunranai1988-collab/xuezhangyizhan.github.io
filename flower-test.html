@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>12朵致命妖花测试 | 美到极致，便是剧毒</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { width: 100%; min-height: 100vh; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #0d0a0f;
+    color: #fff;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    animation: fadeIn 0.4s ease;
+  }
+  .page.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .start-container {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 60px;
+  }
+
+  .start-icon {
+    font-size: 72px;
+    margin-bottom: 20px;
+  }
+
+  .start-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ff6b9d;
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+  }
+
+  .start-subtitle {
+    font-size: 16px;
+    color: #b080a0;
+    margin-bottom: 40px;
+    font-weight: 600;
+  }
+
+  .start-desc {
+    background: #1a1520;
+    border: 1px solid #2a2035;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+
+  .start-desc p {
+    font-size: 14px;
+    color: #b0a0b8;
+    margin-bottom: 8px;
+  }
+  .start-desc p:last-child { margin-bottom: 0; }
+  .start-desc strong { color: #ff6b9d; }
+
+  .start-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b9d, #c94c7e);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 16px 60px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(255, 107, 157, 0.4);
+    transition: all 0.2s ease;
+  }
+  .start-btn:active { transform: scale(0.96); }
+
+  .start-tip {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #665570;
+  }
+
+  .quiz-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: #1a1520;
+    border-radius: 2px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b9d, #c94c7e);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    color: #665570;
+    margin-bottom: 24px;
+  }
+
+  .question-num {
+    font-size: 14px;
+    color: #ff6b9d;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option {
+    background: #1a1520;
+    border: 2px solid #2a2035;
+    border-radius: 14px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .option:active { transform: scale(0.98); }
+  .option.selected {
+    border-color: #ff6b9d;
+    background: #2a1525;
+  }
+
+  .option-letter {
+    width: 32px; height: 32px;
+    background: #2a2035;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .option.selected .option-letter {
+    background: #ff6b9d;
+  }
+
+  .option-text {
+    font-size: 15px;
+    color: #e0d8e8;
+    line-height: 1.5;
+  }
+
+  .prev-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: transparent;
+    color: #665570;
+    border: 1px solid #2a2035;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  .prev-btn:active {
+    transform: scale(0.97);
+    background: #1a1520;
+    color: #fff;
+  }
+
+  .result-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding-top: 40px;
+  }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .result-emoji {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+
+  .result-type {
+    font-size: 26px;
+    font-weight: 900;
+    color: #ff6b9d;
+    margin-bottom: 12px;
+    text-shadow: 0 0 20px rgba(255, 107, 157, 0.4);
+  }
+
+  .result-tagline {
+    font-size: 15px;
+    color: #b0a0b8;
+    margin-bottom: 20px;
+  }
+
+  .result-score-box {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b9d, #c94c7e);
+    color: #fff;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .result-card {
+    background: #1a1520;
+    border: 1px solid #2a2035;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .result-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ff6b9d;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-card-content {
+    font-size: 14px;
+    color: #d0c8d8;
+    line-height: 1.7;
+  }
+
+  .result-card-content p {
+    margin-bottom: 8px;
+  }
+  .result-card-content p:last-child { margin-bottom: 0; }
+
+  .data-bar {
+    margin-bottom: 10px;
+  }
+  .data-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #b0a0b8;
+    margin-bottom: 4px;
+  }
+  .data-bar-label strong { color: #ff6b9d; }
+  .data-bar-track {
+    height: 8px;
+    background: #0d0a0f;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .data-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b9d, #c94c7e);
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+
+  .bottom-btns {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .bottom-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 50px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .bottom-btn.primary {
+    background: linear-gradient(135deg, #ff6b9d, #c94c7e);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(255, 107, 157, 0.3);
+  }
+
+  .bottom-btn.secondary {
+    background: #1a1520;
+    color: #fff;
+    border: 2px solid #2a2035;
+  }
+
+  .bottom-btn:active { transform: scale(0.97); }
+
+  .share-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 99998;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    animation: fadeIn 0.25s ease;
+  }
+  .share-overlay.active { display: flex; }
+
+  .share-modal {
+    background: #fff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .share-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .share-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+  }
+  .share-close {
+    position: absolute;
+    right: 0; top: 0;
+    width: 28px; height: 28px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .share-preview {
+    background: #f8f0f4;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    border: 1px dashed #d0b0c0;
+  }
+  .share-preview strong { color: #ff6b9d; }
+
+  .share-platforms {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .share-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .share-item:active { transform: scale(0.92); }
+  .share-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .share-icon.wechat { background: #07c160; }
+  .share-icon.xhs { background: #ff2442; }
+  .share-icon.moments { background: #5ac8fa; }
+  .share-icon.copy { background: #ff6b9d; }
+  .share-label {
+    font-size: 11px;
+    color: #666;
+  }
+
+  .share-tip {
+    background: #fff8e6;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    color: #b8860b;
+    line-height: 1.6;
+    border: 1px solid #ffe89c;
+  }
+
+  .wechat-share-guide {
+    background: #f0fff4;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #b7ebc6;
+  }
+  .wechat-guide-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #07c160;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .wechat-guide-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+  }
+  .wechat-guide-item strong { color: #07c160; }
+  .wechat-step {
+    width: 22px; height: 22px;
+    background: #07c160;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .wechat-share-copy { margin-bottom: 14px; }
+  .wechat-copy-btn {
+    width: 100%;
+    padding: 14px;
+    background: #07c160;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(7, 193, 96, 0.3);
+    transition: all 0.2s ease;
+  }
+  .wechat-copy-btn:active { transform: scale(0.97); }
+
+  .copy-toast {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+  }
+  .copy-toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+</style>
+</head>
+<body>
+
+<div id="startPage" class="page active">
+  <div class="start-container">
+    <div class="start-icon">🌸</div>
+    <h1 class="start-title">致命妖花测试</h1>
+    <p class="start-subtitle">美到极致，便是剧毒</p>
+
+    <div class="start-desc">
+      <p>彼岸、曼陀罗、罂粟、夹竹桃、乌头、铃兰...</p>
+      <p>十二朵妖花，十二种危险又迷人的人格。</p>
+      <p>凭直觉作答，找出专属于你的<strong>本命妖花</strong>～</p>
+      <p>⏱️ 30秒测出你的致命魅力</p>
+    </div>
+
+    <button class="start-btn" onclick="startQuiz()">🌸 开始测试</button>
+    <p class="start-tip">凭第一直觉作答 · 大约需要1分钟</p>
+  </div>
+</div>
+
+<div id="quizPage" class="page">
+  <div class="quiz-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">第 1 题 / 共 10 题</div>
+    <div id="questionContent"></div>
+  </div>
+</div>
+
+<div id="resultPage" class="page">
+  <div class="result-container" id="resultContent"></div>
+</div>
+
+<script>
+var currentQuestion = 0;
+var answers = [];
+var scores = [];
+var totalScore = 0;
+
+var questions = [
+  {
+    text: "日常气质偏向？",
+    options: [
+      { text: "清冷疏离，自带距离感", score: 1 },
+      { text: "明艳魅惑，吸引力十足", score: 2 },
+      { text: "柔弱唯美，惹人怜惜", score: 3 },
+      { text: "低调内敛，深藏锋芒", score: 4 }
+    ]
+  },
+  {
+    text: "与人相处，你的防备心？",
+    options: [
+      { text: "极高，从不轻易交心", score: 1 },
+      { text: "随性游走，擅长拿捏分寸", score: 2 },
+      { text: "容易动心，掏心付出", score: 3 },
+      { text: "表面随和，内心清醒", score: 4 }
+    ]
+  },
+  {
+    text: "被人冒犯后，你会？",
+    options: [
+      { text: "彻底疏远，断得干净", score: 1 },
+      { text: "巧妙反击，不动声色", score: 2 },
+      { text: "暗自难过，慢慢释怀", score: 3 },
+      { text: "隐忍观察，伺机自保", score: 4 }
+    ]
+  },
+  {
+    text: "你更偏爱哪种风格穿搭？",
+    options: [
+      { text: "暗系冷调，简约孤傲", score: 1 },
+      { text: "浓艳华丽，张扬夺目", score: 2 },
+      { text: "浅柔色系，温婉仙气", score: 3 },
+      { text: "素净朴素，不显张扬", score: 4 }
+    ]
+  },
+  {
+    text: "面对感情的态度？",
+    options: [
+      { text: "爱恨极致，缘尽便散", score: 1 },
+      { text: "享受暧昧，不愿被束缚", score: 2 },
+      { text: "执念很深，为爱沉沦", score: 3 },
+      { text: "小心翼翼，不敢全然投入", score: 4 }
+    ]
+  },
+  {
+    text: "独处时的状态？",
+    options: [
+      { text: "享受孤寂，偏爱无人打扰", score: 1 },
+      { text: "不甘寂寞，喜欢热闹氛围", score: 2 },
+      { text: "多愁善感，容易胡思乱想", score: 3 },
+      { text: "安静度日，不喜外界纷扰", score: 4 }
+    ]
+  },
+  {
+    text: "做事行事风格？",
+    options: [
+      { text: "果决强势，说一不二", score: 1 },
+      { text: "灵活多变，擅长周旋", score: 2 },
+      { text: "温柔被动，习惯迁就", score: 3 },
+      { text: "沉稳谨慎，步步为营", score: 4 }
+    ]
+  },
+  {
+    text: "别人对你的第一印象？",
+    options: [
+      { text: "高冷难接近，气场强大", score: 1 },
+      { text: "风情又危险，一眼难忘", score: 2 },
+      { text: "单纯无害，气质干净", score: 3 },
+      { text: "平平无奇，越了解越有料", score: 4 }
+    ]
+  },
+  {
+    text: "假如拥有能力，你更想？",
+    options: [
+      { text: "掌控人心，让人敬畏", score: 1 },
+      { text: "蛊惑他人，随心而为", score: 2 },
+      { text: "留住美好，守住执念", score: 3 },
+      { text: "隐匿身形，独善其身", score: 4 }
+    ]
+  },
+  {
+    text: "你觉得自身最大特点？",
+    options: [
+      { text: "绝情坦荡，爱恨分明", score: 1 },
+      { text: "魅力满分，危险迷人", score: 2 },
+      { text: "美丽易碎，暗藏软肋", score: 3 },
+      { text: "外柔内刚，不好招惹", score: 4 }
+    ]
+  }
+];
+
+var Q = {
+  anemone: {
+    type: "彼岸花",
+    emoji: "🌺",
+    tagline: "花开彼岸，生死相隔",
+    about: [
+      "你是一朵开在黄泉路上的花，美丽却带着死亡的气息。",
+      "你的爱浓烈而决绝，爱时燃烧一切，恨时寸草不生。",
+      "你习惯隐藏真实的自己，只有在夜深人静时才露出脆弱。"
+    ],
+    data: [
+      { label: "冷艳指数", value: 95 },
+      { label: "危险指数", value: 88 },
+      { label: "神秘指数", value: 92 },
+      { label: "深情指数", value: 80 }
+    ],
+    desc: "你的美带着宿命感，让人不由自主被吸引，却又不敢靠近。"
+  },
+  mandala: {
+    type: "曼陀罗",
+    emoji: "🌀",
+    tagline: "迷幻魅惑，致命诱惑",
+    about: [
+      "你是一朵让人迷失的花，美丽却充满致命的诱惑。",
+      "你擅长用魅力操控人心，让人不知不觉陷入你的陷阱。",
+      "你享受被追捧的感觉，但从不轻易付出真心。"
+    ],
+    data: [
+      { label: "魅惑指数", value: 98 },
+      { label: "危险指数", value: 95 },
+      { label: "自信指数", value: 90 },
+      { label: "专一指数", value: 45 }
+    ],
+    desc: "你是天生的猎手，用美丽作为武器，俘获所有你想要的。"
+  },
+  poppy: {
+    type: "罂粟",
+    emoji: "🌑",
+    tagline: "让人上瘾的致命温柔",
+    about: [
+      "你是一朵让人上瘾的花，温柔却带着致命的吸引力。",
+      "你懂得如何拿捏人心，让对方心甘情愿为你付出一切。",
+      "你享受掌控感情的感觉，却又害怕被束缚。"
+    ],
+    data: [
+      { label: "魅惑指数", value: 90 },
+      { label: "危险指数", value: 85 },
+      { label: "情商指数", value: 95 },
+      { label: "依赖指数", value: 30 }
+    ],
+    desc: "你是欲望的化身，让人明知危险却无法抗拒。"
+  },
+  oleander: {
+    type: "夹竹桃",
+    emoji: "🌸",
+    tagline: "美艳外表下的剧毒",
+    about: [
+      "你是一朵外表美艳却全身带毒的花，让人难以防备。",
+      "你看似柔弱无害，实则内心强大，不好招惹。",
+      "你不会主动伤害别人，但也绝不容许别人伤害你。"
+    ],
+    data: [
+      { label: "美艳指数", value: 88 },
+      { label: "危险指数", value: 80 },
+      { label: "伪装指数", value: 85 },
+      { label: "防御指数", value: 92 }
+    ],
+    desc: "你是一朵带刺的玫瑰，看似美丽却暗藏杀机。"
+  },
+  aconite: {
+    type: "乌头",
+    emoji: "🔵",
+    tagline: "深藏不露的致命剧毒",
+    about: [
+      "你是一朵低调却剧毒无比的花，深藏不露。",
+      "你看似平凡，实则有着惊人的力量和智慧。",
+      "你不喜欢张扬，但一旦被冒犯，后果不堪设想。"
+    ],
+    data: [
+      { label: "智慧指数", value: 95 },
+      { label: "危险指数", value: 90 },
+      { label: "低调指数", value: 88 },
+      { label: "耐力指数", value: 85 }
+    ],
+    desc: "你是真正的高手，不动声色间就能掌控全局。"
+  },
+  lily: {
+    type: "铃兰",
+    emoji: "💮",
+    tagline: "纯洁外表下的致命诱惑",
+    about: [
+      "你是一朵看似纯洁却暗藏杀机的花。",
+      "你拥有干净的气质和温柔的外表，让人放下防备。",
+      "但你的内心却清醒而独立，有着自己的坚持和底线。"
+    ],
+    data: [
+      { label: "纯洁指数", value: 85 },
+      { label: "危险指数", value: 70 },
+      { label: "智慧指数", value: 88 },
+      { label: "韧性指数", value: 80 }
+    ],
+    desc: "你是一朵温柔却坚韧的花，看似柔弱实则不易摧毁。"
+  },
+  colchicum: {
+    type: "秋水仙",
+    emoji: "🔮",
+    tagline: "迟来的致命美丽",
+    about: [
+      "你是一朵在秋天绽放的花，美丽却带着哀伤。",
+      "你感情细腻，容易被感动，但也容易受伤。",
+      "你有着丰富的内心世界，却不轻易向人展露。"
+    ],
+    data: [
+      { label: "文艺指数", value: 92 },
+      { label: "危险指数", value: 65 },
+      { label: "敏感指数", value: 88 },
+      { label: "执着指数", value: 85 }
+    ],
+    desc: "你是一朵忧郁的花，美丽却带着让人怜惜的脆弱。"
+  },
+  wolfsbane: {
+    type: "狼毒",
+    emoji: "🌿",
+    tagline: "致命的守护与占有",
+    about: [
+      "你是一朵有毒却执着的花，守护着自己珍视的一切。",
+      "你对感情非常专一，一旦认定就会全心付出。",
+      "但你也有着强烈的占有欲，不容许背叛。"
+    ],
+    data: [
+      { label: "专一指数", value: 95 },
+      { label: "危险指数", value: 75 },
+      { label: "忠诚指数", value: 90 },
+      { label: "占有指数", value: 80 }
+    ],
+    desc: "你是一朵忠诚却危险的花，爱你就意味着被你紧紧束缚。"
+  },
+  alocasia: {
+    type: "滴水观音",
+    emoji: "🍃",
+    tagline: "温和外表下的暗藏杀机",
+    about: [
+      "你是一朵看似温和却暗藏杀机的花。",
+      "你外表随和，容易相处，但内心有着自己的原则和底线。",
+      "你不会轻易发怒，但一旦触及底线，就会展现出惊人的力量。"
+    ],
+    data: [
+      { label: "温和指数", value: 85 },
+      { label: "危险指数", value: 70 },
+      { label: "理智指数", value: 90 },
+      { label: "耐力指数", value: 88 }
+    ],
+    desc: "你是一朵理智的花，懂得隐忍和等待最佳时机。"
+  },
+  poinsettia: {
+    type: "一品红",
+    emoji: "🔴",
+    tagline: "热情似火的致命诱惑",
+    about: [
+      "你是一朵热情似火的花，美丽却带着刺。",
+      "你性格开朗，充满活力，总是能吸引周围人的目光。",
+      "但你也有着自己的骄傲，不容许被轻视。"
+    ],
+    data: [
+      { label: "热情指数", value: 95 },
+      { label: "危险指数", value: 60 },
+      { label: "自信指数", value: 88 },
+      { label: "直率指数", value: 85 }
+    ],
+    desc: "你是一朵热烈的花，让人感受到生命的活力和热情。"
+  },
+  azalea: {
+    type: "黄花杜鹃",
+    emoji: "🌼",
+    tagline: "美丽却易碎的致命诱惑",
+    about: [
+      "你是一朵美丽却易碎的花，让人忍不住想要保护。",
+      "你外表柔弱，气质温婉，但内心却有着自己的坚持。",
+      "你容易相信别人，容易受伤，但也容易重新站起来。"
+    ],
+    data: [
+      { label: "美丽指数", value: 90 },
+      { label: "危险指数", value: 55 },
+      { label: "温柔指数", value: 88 },
+      { label: "韧性指数", value: 75 }
+    ],
+    desc: "你是一朵温柔的花，美丽却需要被小心呵护。"
+  },
+  milkweed: {
+    type: "马利筋",
+    emoji: "🦋",
+    tagline: "坚韧不拔的致命生命力",
+    about: [
+      "你是一朵生命力顽强的花，看似柔弱却坚韧不拔。",
+      "你经历过很多困难，但总能坚强地挺过来。",
+      "你外表温和，但内心却有着惊人的力量和勇气。"
+    ],
+    data: [
+      { label: "坚韧指数", value: 95 },
+      { label: "危险指数", value: 60 },
+      { label: "乐观指数", value: 85 },
+      { label: "善良指数", value: 90 }
+    ],
+    desc: "你是一朵坚韧的花，在逆境中依然能绽放美丽。"
+  }
+};
+
+function getResultKey(score) {
+  var avg = score / questions.length;
+  if (avg <= 1.3) return 'anemone';
+  if (avg <= 1.7) return 'mandala';
+  if (avg <= 2.0) return 'poppy';
+  if (avg <= 2.3) return 'oleander';
+  if (avg <= 2.6) return 'aconite';
+  if (avg <= 2.9) return 'lily';
+  if (avg <= 3.2) return 'colchicum';
+  if (avg <= 3.5) return 'wolfsbane';
+  if (avg <= 3.7) return 'alocasia';
+  if (avg <= 3.85) return 'poinsettia';
+  if (avg <= 3.95) return 'azalea';
+  return 'milkweed';
+}
+
+function startQuiz() {
+  currentQuestion = 0;
+  answers = [];
+  scores = [];
+  totalScore = 0;
+  document.getElementById('startPage').classList.remove('active');
+  document.getElementById('quizPage').classList.add('active');
+  showQuestion();
+}
+
+function showQuestion() {
+  var q = questions[currentQuestion];
+  var progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  document.getElementById('progressFill').style.width = progress + '%';
+  document.getElementById('progressText').textContent = '第 ' + (currentQuestion + 1) + ' 题 / 共 ' + questions.length + ' 题';
+
+  var html = '';
+  html += '<div class="question-num">问题 ' + (currentQuestion + 1) + '</div>';
+  html += '<div class="question-text">' + q.text + '</div>';
+  html += '<div class="option-list">';
+
+  q.options.forEach(function(opt, i) {
+    var letter = String.fromCharCode(65 + i);
+    html += '<div class="option" onclick="selectOption(' + i + ', ' + opt.score + ')">';
+    html += '<div class="option-letter">' + letter + '</div>';
+    html += '<div class="option-text">' + opt.text + '</div>';
+    html += '</div>';
+  });
+
+  html += '</div>';
+
+  if (currentQuestion > 0) {
+    html += '<button class="prev-btn" onclick="goToPrevQuestion()">← 返回上一题</button>';
+  }
+
+  document.getElementById('questionContent').innerHTML = html;
+}
+
+function selectOption(index, score) {
+  var options = document.querySelectorAll('.option');
+  options.forEach(function(el) { el.classList.remove('selected'); });
+  options[index].classList.add('selected');
+
+  if (scores[currentQuestion] !== undefined) {
+    totalScore -= scores[currentQuestion];
+  }
+
+  answers[currentQuestion] = index;
+  scores[currentQuestion] = score;
+  totalScore += score;
+
+  setTimeout(function() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      showQuestion();
+    } else {
+      showResult();
+    }
+  }, 300);
+}
+
+function goToPrevQuestion() {
+  if (scores[currentQuestion] !== undefined) {
+    totalScore -= scores[currentQuestion];
+    scores[currentQuestion] = undefined;
+    answers[currentQuestion] = undefined;
+  }
+  currentQuestion--;
+  if (currentQuestion < 0) currentQuestion = 0;
+  showQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizPage').classList.remove('active');
+  document.getElementById('resultPage').classList.add('active');
+
+  var key = getResultKey(totalScore);
+  var r = Q[key];
+  window._resultData = r;
+
+  var maxScore = questions.length * 4;
+
+  var html = '';
+  html += '<div class="result-header">';
+  html += '<div class="result-emoji">' + r.emoji + '</div>';
+  html += '<div class="result-type">' + r.type + '</div>';
+  html += '<div class="result-tagline">' + r.tagline + '</div>';
+  html += '<div class="result-score-box">得分：' + totalScore + ' / ' + maxScore + '</div>';
+  html += '</div>';
+
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">🌟 关于你</div>';
+  html += '<div class="result-card-content">';
+  r.about.forEach(function(p) {
+    html += '<p>' + p + '</p>';
+  });
+  html += '</div></div>';
+
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">📊 你的妖花数据</div>';
+  html += '<div class="result-card-content">';
+  r.data.forEach(function(d) {
+    html += '<div class="data-bar">';
+    html += '<div class="data-bar-label"><span>' + d.label + '</span><strong>' + d.value + '%</strong></div>';
+    html += '<div class="data-bar-track"><div class="data-bar-fill" style="width:' + d.value + '%"></div></div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  html += '<div class="result-card">';
+  html += '<div class="result-card-title">💬 一句话总结</div>';
+  html += '<div class="result-card-content"><p>' + r.desc + '</p></div>';
+  html += '</div>';
+
+  html += '<div class="bottom-btns">';
+  html += '<button class="bottom-btn secondary" onclick="restart()">🔄 重新测试</button>';
+  html += '<button class="bottom-btn primary" onclick="shareResult()">📤 分享结果</button>';
+  html += '</div>';
+
+  document.getElementById('resultContent').innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function restart() {
+  currentQuestion = 0;
+  totalScore = 0;
+  answers = [];
+  scores = [];
+  document.getElementById('resultPage').classList.remove('active');
+  document.getElementById('startPage').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function isWechat() {
+  return /MicroMessenger/i.test(navigator.userAgent);
+}
+
+function shareResult() {
+  var r = window._resultData || Q[getResultKey(totalScore)];
+  var shareText = '我在「12朵致命妖花测试」中测出了【' + r.type + '】！\n\n' +
+    r.tagline + '\n\n' +
+    '你也来测测吧~\n' + window.location.href;
+
+  window._shareText = shareText;
+
+  var overlay = document.getElementById('shareOverlay');
+  var normalPanel = document.getElementById('shareNormalPanel');
+  var wechatPanel = document.getElementById('shareWechatPanel');
+  var preview = document.getElementById('sharePreview');
+
+  preview.innerHTML = '我在「12朵致命妖花测试」中测出了<strong>【' + r.type + '】</strong>！<br>' + r.tagline + '<br>你也来测测吧~';
+
+  if (isWechat()) {
+    normalPanel.style.display = 'none';
+    wechatPanel.style.display = 'block';
+  } else {
+    normalPanel.style.display = 'block';
+    wechatPanel.style.display = 'none';
+  }
+
+  overlay.classList.add('active');
+}
+
+function closeShare() {
+  document.getElementById('shareOverlay').classList.remove('active');
+}
+
+function shareToWechat() {
+  var text = window._shareText;
+  if (isWechat()) {
+    showToast('请点击右上角「...」选择发送给朋友');
+    return;
+  }
+  if (navigator.share) {
+    navigator.share({
+      title: '12朵致命妖花测试',
+      text: text,
+      url: window.location.href
+    }).catch(function(){});
+  } else {
+    copyToClipboard(text);
+    showToast('已复制结果！打开微信粘贴给好友即可~');
+    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
+  }
+}
+
+function shareToXHS() {
+  var text = window._shareText;
+  if (isWechat()) {
+    copyToClipboard(text);
+    showToast('已复制！点击右上角「...」选择在浏览器打开，再去小红书粘贴');
+    return;
+  }
+  copyToClipboard(text);
+  showToast('已复制结果！打开小红书私信粘贴即可~');
+  setTimeout(function(){ window.location.href = 'xhsdiscover://'; }, 800);
+}
+
+function shareToMoments() {
+  var text = window._shareText;
+  if (isWechat()) {
+    showToast('请点击右上角「...」选择分享到朋友圈');
+    return;
+  }
+  if (navigator.share) {
+    navigator.share({
+      title: '12朵致命妖花测试',
+      text: text,
+      url: window.location.href
+    }).catch(function(){});
+  } else {
+    copyToClipboard(text);
+    showToast('已复制结果！打开朋友圈粘贴即可~');
+    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
+  }
+}
+
+function copyResult() {
+  var text = window._shareText;
+  copyToClipboard(text);
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      showToast('已复制到剪贴板！');
+    }).catch(function(){ fallbackCopy(text); });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.top = '0';
+  textarea.style.zIndex = '99999';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    showToast('已复制到剪贴板！');
+  } catch(e) {
+    showToast('复制失败，请长按文字手动复制');
+  }
+  document.body.removeChild(textarea);
+}
+
+function showToast(msg) {
+  var toast = document.getElementById('copyToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+}
+</script>
+
+<div class="share-overlay" id="shareOverlay" onclick="if(event.target===this)closeShare()">
+  <div class="share-modal">
+    <div class="share-header">
+      <div class="share-title">分享测试结果</div>
+      <button class="share-close" onclick="closeShare()">✕</button>
+    </div>
+
+    <div class="share-preview" id="sharePreview"></div>
+
+    <div id="shareNormalPanel">
+      <div class="share-platforms">
+        <div class="share-item" onclick="shareToWechat()">
+          <div class="share-icon wechat">💬</div>
+          <div class="share-label">微信好友</div>
+        </div>
+        <div class="share-item" onclick="shareToXHS()">
+          <div class="share-icon xhs">📕</div>
+          <div class="share-label">小红书私信</div>
+        </div>
+        <div class="share-item" onclick="shareToMoments()">
+          <div class="share-icon moments">🌐</div>
+          <div class="share-label">朋友圈</div>
+        </div>
+        <div class="share-item" onclick="copyResult()">
+          <div class="share-icon copy">📋</div>
+          <div class="share-label">复制文字</div>
+        </div>
+      </div>
+      <div class="share-tip">
+        💡 提示：点击后会自动复制结果文字，跳转到对应App后粘贴即可分享。
+      </div>
+    </div>
+
+    <div id="shareWechatPanel" style="display:none;">
+      <div class="wechat-share-guide">
+        <div class="wechat-guide-title">📢 分享给朋友</div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">1</span>
+          <span>点击右上角 <strong>「···」</strong></span>
+        </div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">2</span>
+          <span>选择「<strong>发送给朋友</strong>」或「<strong>分享到朋友圈</strong>」</span>
+        </div>
+        <div class="wechat-guide-item">
+          <span class="wechat-step">3</span>
+          <span>粘贴结果文字 + 截图分享</span>
+        </div>
+      </div>
+      <div class="wechat-share-copy" onclick="copyResult()">
+        <button class="wechat-copy-btn">📋 一键复制结果文字</button>
+      </div>
+      <div class="share-tip">
+        💡 先复制结果文字，再点右上角分享，粘贴给朋友更方便哦~
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="copyToast"></div>
+
+</body>
+</html>
