@@ -247,15 +247,23 @@
   }
 
   .identity-emoji {
-    font-size: 80px;
-    margin-bottom: 16px;
-    filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.5));
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.4));
     animation: glow 3s ease-in-out infinite;
+  }
+  .identity-emoji svg {
+    width: 100%;
+    height: 100%;
   }
 
   @keyframes glow {
-    0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.5)); }
-    50% { filter: drop-shadow(0 0 30px rgba(255, 107, 157, 0.8)); }
+    0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 107, 157, 0.4)); }
+    50% { filter: drop-shadow(0 0 30px rgba(255, 107, 157, 0.7)); }
   }
 
   .identity-name {
@@ -761,7 +769,7 @@ var questions = [
 var Q = {
   anemone: {
     type: "彼岸花",
-    emoji: "🌺",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="anemoneGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff6b9d"/><stop offset="100%" style="stop-color:#c94c7e"/></linearGradient></defs><path d="M50 10 C30 25, 20 45, 25 65 C28 75, 35 82, 50 85 C65 82, 72 75, 75 65 C80 45, 70 25, 50 10 Z" fill="none" stroke="url(#anemoneGrad)" stroke-width="2"/><path d="M50 85 L50 95" stroke="#ff6b9d" stroke-width="2"/><path d="M50 30 L45 45 M50 30 L50 45 M50 30 L55 45" stroke="#ff6b9d" stroke-width="1.5"/></svg>',
     tagline: "花开彼岸，生死相隔",
     tags: ["冷艳绝决", "爱恨分明", "神秘莫测", "外冷内热"],
     quote: "见花不见叶，见叶不见花，这是我独有的浪漫。",
@@ -780,7 +788,7 @@ var Q = {
   },
   mandala: {
     type: "曼陀罗",
-    emoji: "🌀",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="mandalaGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#a855f7"/><stop offset="100%" style="stop-color:#7c3aed"/></linearGradient></defs><circle cx="50" cy="50" r="35" fill="none" stroke="url(#mandalaGrad)" stroke-width="2"/><circle cx="50" cy="50" r="25" fill="none" stroke="url(#mandalaGrad)" stroke-width="1.5"/><circle cx="50" cy="50" r="15" fill="none" stroke="url(#mandalaGrad)" stroke-width="1"/><path d="M50 15 L50 22 M50 78 L50 85 M15 50 L22 50 M78 50 L85 50" stroke="url(#mandalaGrad)" stroke-width="2"/><path d="M25 25 L30 30 M70 70 L75 75 M25 75 L30 70 M75 25 L70 30" stroke="url(#mandalaGrad)" stroke-width="1.5"/></svg>',
     tagline: "迷幻魅惑，致命诱惑",
     tags: ["魅惑众生", "掌控欲强", "自信张扬", "游戏人间"],
     quote: "我不是在诱惑你，是你心甘情愿走进我的花园。",
@@ -799,7 +807,7 @@ var Q = {
   },
   poppy: {
     type: "罂粟",
-    emoji: "🌑",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="poppyGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f43f5e"/><stop offset="100%" style="stop-color:#be123c"/></linearGradient></defs><circle cx="35" cy="35" r="15" fill="none" stroke="url(#poppyGrad)" stroke-width="2"/><circle cx="65" cy="35" r="15" fill="none" stroke="url(#poppyGrad)" stroke-width="2"/><circle cx="50" cy="55" r="18" fill="none" stroke="url(#poppyGrad)" stroke-width="2"/><circle cx="50" cy="50" r="8" fill="none" stroke="#ffd700" stroke-width="1.5"/><path d="M50 70 L50 95" stroke="#4ade80" stroke-width="2"/><path d="M50 75 L35 65 M50 82 L65 72" stroke="#4ade80" stroke-width="1.5"/></svg>',
     tagline: "让人上瘾的致命温柔",
     tags: ["温柔陷阱", "撩拨高手", "欲擒故纵", "让人上瘾"],
     quote: "明知道我有毒，你还是戒不掉，对吗？",
@@ -818,7 +826,7 @@ var Q = {
   },
   oleander: {
     type: "夹竹桃",
-    emoji: "🌸",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="oleanderGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#ea580c"/></linearGradient></defs><path d="M50 10 L50 90" stroke="#4ade80" stroke-width="2"/><path d="M50 25 C40 20, 35 28, 38 35 C40 42, 48 40, 50 35" fill="none" stroke="url(#oleanderGrad)" stroke-width="2"/><path d="M50 45 C60 40, 65 48, 62 55 C60 62, 52 60, 50 55" fill="none" stroke="url(#oleanderGrad)" stroke-width="2"/><path d="M50 65 C40 60, 35 68, 38 75 C40 82, 48 80, 50 75" fill="none" stroke="url(#oleanderGrad)" stroke-width="2"/><path d="M50 30 L42 25 M50 50 L58 45 M50 70 L42 65" stroke="#4ade80" stroke-width="1.5"/></svg>',
     tagline: "美艳外表下的剧毒",
     tags: ["外表柔弱", "内心强大", "不好招惹", "以柔克刚"],
     quote: "我看起来无害，那是因为你还没惹到我。",
@@ -837,7 +845,7 @@ var Q = {
   },
   aconite: {
     type: "乌头",
-    emoji: "🔵",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="aconiteGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#3b82f6"/><stop offset="100%" style="stop-color:#1d4ed8"/></linearGradient></defs><path d="M50 15 L50 85" stroke="#64748b" stroke-width="2"/><path d="M50 20 C30 15, 20 25, 25 35 C28 42, 38 40, 42 35" fill="none" stroke="url(#aconiteGrad)" stroke-width="2"/><path d="M50 35 C35 30, 25 40, 30 50 C33 57, 43 55, 47 50" fill="none" stroke="url(#aconiteGrad)" stroke-width="2"/><path d="M50 50 C35 45, 25 55, 30 65 C33 72, 43 70, 47 65" fill="none" stroke="url(#aconiteGrad)" stroke-width="2"/><path d="M50 25 L58 22 M50 40 L58 37 M50 55 L58 52" stroke="#64748b" stroke-width="1.5"/></svg>',
     tagline: "深藏不露的致命剧毒",
     tags: ["低调隐忍", "智慧超群", "深藏不露", "一击致命"],
     quote: "你以为我普通，是因为你还没见识过我的厉害。",
@@ -856,7 +864,7 @@ var Q = {
   },
   lily: {
     type: "铃兰",
-    emoji: "💮",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="lilyGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#e0e7ff"/><stop offset="100%" style="stop-color:#c7d2fe"/></linearGradient></defs><path d="M50 10 L50 90" stroke="#4ade80" stroke-width="2"/><path d="M50 25 C55 22, 60 25, 58 32 C56 38, 50 38, 50 32" fill="none" stroke="url(#lilyGrad)" stroke-width="2"/><path d="M50 38 C55 35, 60 38, 58 45 C56 51, 50 51, 50 45" fill="none" stroke="url(#lilyGrad)" stroke-width="2"/><path d="M50 51 C55 48, 60 51, 58 58 C56 64, 50 64, 50 58" fill="none" stroke="url(#lilyGrad)" stroke-width="2"/><path d="M50 64 C55 61, 60 64, 58 71 C56 77, 50 77, 50 71" fill="none" stroke="url(#lilyGrad)" stroke-width="2"/><path d="M50 43 L42 38 M50 56 L42 51" stroke="#4ade80" stroke-width="1.5"/></svg>',
     tagline: "纯洁外表下的致命诱惑",
     tags: ["气质干净", "外纯内刚", "清醒独立", "温柔坚定"],
     quote: "我温柔，但不代表我好欺负。",
@@ -875,7 +883,7 @@ var Q = {
   },
   colchicum: {
     type: "秋水仙",
-    emoji: "🔮",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="colchicumGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#c4b5fd"/><stop offset="100%" style="stop-color:#a78bfa"/></linearGradient></defs><path d="M50 20 L50 85" stroke="#64748b" stroke-width="2"/><path d="M50 25 C40 18, 30 28, 35 40 C38 48, 48 46, 50 40" fill="none" stroke="url(#colchicumGrad)" stroke-width="2"/><path d="M50 45 C60 38, 70 48, 65 60 C62 68, 52 66, 50 60" fill="none" stroke="url(#colchicumGrad)" stroke-width="2"/><path d="M50 65 C40 58, 30 68, 35 80" fill="none" stroke="url(#colchicumGrad)" stroke-width="2"/><path d="M50 35 L58 30 M50 55 L58 50" stroke="#64748b" stroke-width="1.5"/></svg>',
     tagline: "迟来的致命美丽",
     tags: ["忧郁文艺", "细腻敏感", "执念很深", "浪漫至死"],
     quote: "秋天开的花，也有属于自己的春天。",
@@ -894,7 +902,7 @@ var Q = {
   },
   wolfsbane: {
     type: "狼毒",
-    emoji: "🌿",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="wolfsbaneGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#84cc16"/><stop offset="100%" style="stop-color:#65a30d"/></linearGradient></defs><path d="M50 10 L50 90" stroke="#64748b" stroke-width="2"/><path d="M50 20 C40 15, 35 22, 38 30 C40 37, 48 35, 50 30" fill="none" stroke="url(#wolfsbaneGrad)" stroke-width="2"/><path d="M50 35 C60 30, 65 37, 62 45 C60 52, 52 50, 50 45" fill="none" stroke="url(#wolfsbaneGrad)" stroke-width="2"/><path d="M50 50 C40 45, 35 52, 38 60 C40 67, 48 65, 50 60" fill="none" stroke="url(#wolfsbaneGrad)" stroke-width="2"/><path d="M50 65 C60 60, 65 67, 62 75 C60 82, 52 80, 50 75" fill="none" stroke="url(#wolfsbaneGrad)" stroke-width="2"/><path d="M50 25 L58 22 M50 40 L58 37 M50 55 L58 52" stroke="#64748b" stroke-width="1.5"/></svg>',
     tagline: "致命的守护与占有",
     tags: ["占有欲强", "专一忠诚", "护短狂魔", "为爱偏执"],
     quote: "你是我的，谁也抢不走，包括你自己。",
@@ -913,7 +921,7 @@ var Q = {
   },
   alocasia: {
     type: "滴水观音",
-    emoji: "🍃",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="alocasiaGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#22c55e"/><stop offset="100%" style="stop-color:#16a34a"/></linearGradient></defs><path d="M50 10 L50 95" stroke="#15803d" stroke-width="2"/><path d="M50 25 C30 20, 15 35, 20 55 C23 70, 40 70, 50 65" fill="none" stroke="url(#alocasiaGrad)" stroke-width="2"/><path d="M50 50 C70 45, 85 60, 80 80 C77 95, 60 95, 50 90" fill="none" stroke="url(#alocasiaGrad)" stroke-width="2"/><path d="M50 60 L45 75" stroke="#15803d" stroke-width="1.5"/></svg>',
     tagline: "温和外表下的暗藏杀机",
     tags: ["随和佛系", "内心清醒", "隐忍有度", "大智若愚"],
     quote: "我不发火，不代表我没脾气。",
@@ -932,7 +940,7 @@ var Q = {
   },
   poinsettia: {
     type: "一品红",
-    emoji: "🔴",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="poinsettiaGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#dc2626"/><stop offset="100%" style="stop-color:#b91c1c"/></linearGradient></defs><path d="M50 10 L50 95" stroke="#166534" stroke-width="2"/><path d="M50 25 C35 15, 25 25, 30 38 C33 48, 42 45, 50 40" fill="none" stroke="url(#poinsettiaGrad)" stroke-width="2"/><path d="M50 35 C65 25, 75 35, 70 48 C67 58, 58 55, 50 50" fill="none" stroke="url(#poinsettiaGrad)" stroke-width="2"/><path d="M50 50 C35 60, 25 70, 30 83 C33 93, 42 90, 50 85" fill="none" stroke="url(#poinsettiaGrad)" stroke-width="2"/><path d="M50 45 C65 55, 75 65, 70 78 C67 88, 58 85, 50 80" fill="none" stroke="url(#poinsettiaGrad)" stroke-width="2"/><circle cx="50" cy="50" r="8" fill="none" stroke="#fbbf24" stroke-width="1.5"/></svg>',
     tagline: "热情似火的致命诱惑",
     tags: ["热情奔放", "自信耀眼", "直率坦荡", "活力满满"],
     quote: "我就是这么耀眼，不喜欢的话，别看就好了。",
@@ -951,7 +959,7 @@ var Q = {
   },
   azalea: {
     type: "黄花杜鹃",
-    emoji: "🌼",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="azaleaGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#eab308"/><stop offset="100%" style="stop-color:#ca8a04"/></linearGradient></defs><path d="M50 15 L50 90" stroke="#4ade80" stroke-width="2"/><path d="M50 20 C35 15, 25 25, 30 35 C33 42, 42 40, 50 35" fill="none" stroke="url(#azaleaGrad)" stroke-width="2"/><path d="M50 40 C65 35, 75 45, 70 55 C67 62, 58 60, 50 55" fill="none" stroke="url(#azaleaGrad)" stroke-width="2"/><path d="M50 60 C35 55, 25 65, 30 75 C33 82, 42 80, 50 75" fill="none" stroke="url(#azaleaGrad)" stroke-width="2"/><path d="M50 25 L58 22 M50 45 L58 42 M50 65 L58 62" stroke="#4ade80" stroke-width="1.5"/></svg>',
     tagline: "美丽却易碎的致命诱惑",
     tags: ["温柔治愈", "惹人怜惜", "外表柔弱", "内心坚强"],
     quote: "我看起来易碎，但你不知道我经历了多少才绽放。",
@@ -970,7 +978,7 @@ var Q = {
   },
   milkweed: {
     type: "马利筋",
-    emoji: "🦋",
+    emoji: '<svg viewBox="0 0 100 100"><defs><linearGradient id="milkweedGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ec4899"/><stop offset="100%" style="stop-color:#be185d"/></linearGradient></defs><path d="M50 10 L50 95" stroke="#15803d" stroke-width="2"/><circle cx="35" cy="30" r="8" fill="none" stroke="url(#milkweedGrad)" stroke-width="2"/><circle cx="65" cy="30" r="8" fill="none" stroke="url(#milkweedGrad)" stroke-width="2"/><circle cx="40" cy="50" r="8" fill="none" stroke="url(#milkweedGrad)" stroke-width="2"/><circle cx="60" cy="50" r="8" fill="none" stroke="url(#milkweedGrad)" stroke-width="2"/><circle cx="45" cy="70" r="8" fill="none" stroke="url(#milkweedGrad)" stroke-width="2"/><circle cx="55" cy="70" r="8" fill="none" stroke="url(#milkweedGrad)" stroke-width="2"/><path d="M50 35 L45 45 M50 55 L55 65" stroke="#15803d" stroke-width="1.5"/></svg>',
     tagline: "坚韧不拔的致命生命力",
     tags: ["生命力强", "乐观向上", "善良温暖", "越挫越勇"],
     quote: "越是狂风暴雨，我开得越灿烂。",
