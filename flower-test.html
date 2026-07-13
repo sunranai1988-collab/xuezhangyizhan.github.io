@@ -1006,6 +1006,30 @@ var Q = {
   }
 };
 
+var flowerImages = {
+  anemone: 'anemone.png',
+  mandala: 'mandala.png',
+  poppy: 'poppy.png',
+  oleander: 'oleander.png',
+  aconite: 'aconite.png',
+  lily: 'lily.png',
+  colchicum: 'colchicum.png',
+  wolfsbane: 'wolfsbane.png',
+  alocasia: 'alocasia.png',
+  poinsettia: 'poinsettia.png',
+  azalea: 'azalea.png',
+  milkweed: 'milkweed.png'
+};
+
+function preloadImages() {
+  for (var key in flowerImages) {
+    var img = new Image();
+    img.src = flowerImages[key];
+  }
+}
+
+preloadImages();
+
 function getResultKey(score) {
   var avg = score / questions.length;
   if (avg <= 1.3) return 'anemone';
