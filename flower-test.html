@@ -726,23 +726,66 @@
     color: #999;
   }
 
-  .share-actions {
-    margin-top: 12px;
-    text-align: center;
+  .share-guide {
+    margin: 16px 12px 12px;
+    background: #f8f5fc;
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid rgba(157,78,221,0.1);
   }
-  .share-action-btn {
+  .guide-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .guide-step:last-child { margin-bottom: 0; }
+  .step-num {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
     background: linear-gradient(135deg, #9d4edd, #ff4d6d);
     color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .share-actions {
+    margin-top: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 12px;
+  }
+  .share-action-btn {
     border: none;
     border-radius: 25px;
-    padding: 12px 32px;
-    font-size: 14px;
+    padding: 13px 32px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(157,78,221,0.3);
     transition: transform 0.2s ease;
+    width: 100%;
   }
-  .share-action-btn:active { transform: scale(0.95); }
+  .share-action-btn.primary {
+    background: linear-gradient(135deg, #9d4edd, #ff4d6d);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(157,78,221,0.3);
+  }
+  .share-action-btn.secondary {
+    background: #f0e8f0;
+    color: #9d4edd;
+  }
+  .share-action-btn:active { transform: scale(0.96); }
 
   .share-tip {
     background: #fff8e6;
@@ -1471,6 +1514,10 @@ function isWechat() {
   return /MicroMessenger/i.test(navigator.userAgent);
 }
 
+function isXHS() {
+  return /xhsdiscover|xiaohongshu/i.test(navigator.userAgent);
+}
+
 function shareResult() {
   var r = window._resultData || Q[getResultKey(totalScore)];
   var shareText = '我在「12朵致命妖花测试」中测出了【' + r.type + '】！\n\n' +
@@ -1481,9 +1528,12 @@ function shareResult() {
 
   var overlay = document.getElementById('shareOverlay');
   var card = document.getElementById('shareCard');
+  var guide = document.getElementById('shareGuide');
+  var actions = document.getElementById('shareActions');
 
   var scorePercent = Math.round((totalScore / (questions.length * 4)) * 100);
-  
+
+  // 渲染精美卡片
   card.innerHTML =
     '<div class="share-card-inner">' +
       '<div class="share-card-top">' + r.emoji + '</div>' +
@@ -1496,6 +1546,31 @@ function shareResult() {
       '<div class="share-card-brand">12朵致命妖花测试</div>' +
     '</div>';
 
+  // 根据环境智能引导
+  if (isWechat()) {
+    guide.innerHTML =
+      '<div class="guide-step"><span class="step-num">1</span><span class="step-text">长按上方花朵图片，保存到相册</span></div>' +
+      '<div class="guide-step"><span class="step-num">2</span><span class="step-text">点击下方按钮复制配文</span></div>' +
+      '<div class="guide-step"><span class="step-num">3</span><span class="step-text">打开朋友圈，发图+粘贴配文</span></div>';
+    actions.innerHTML =
+      '<button class="share-action-btn primary" onclick="copyShareText()">📋 一键复制配文</button>';
+  } else if (isXHS()) {
+    guide.innerHTML =
+      '<div class="guide-step"><span class="step-num">1</span><span class="step-text">截图保存上方结果卡片</span></div>' +
+      '<div class="guide-step"><span class="step-num">2</span><span class="step-text">点击下方按钮复制配文</span></div>' +
+      '<div class="guide-step"><span class="step-num">3</span><span class="step-text">跳转小红书，发笔记配图</span></div>';
+    actions.innerHTML =
+      '<button class="share-action-btn primary" onclick="goToXHS()">📷 去小红书发笔记</button>' +
+      '<button class="share-action-btn secondary" onclick="copyShareText()">📋 先复制配文</button>';
+  } else {
+    guide.innerHTML =
+      '<div class="guide-step"><span class="step-num">1</span><span class="step-text">截图保存上方结果卡片</span></div>' +
+      '<div class="guide-step"><span class="step-num">2</span><span class="step-text">点击下方按钮分享或复制</span></div>';
+    actions.innerHTML =
+      '<button class="share-action-btn primary" onclick="nativeShare()">📤 分享给好友</button>' +
+      '<button class="share-action-btn secondary" onclick="copyShareText()">📋 复制配文</button>';
+  }
+
   overlay.classList.add('active');
 }
 
@@ -1505,7 +1580,28 @@ function closeShare() {
 
 function copyShareText() {
   copyToClipboard(window._shareText);
-  showToast('已复制！发朋友圈时粘贴文字～');
+  showToast('配文已复制！去粘贴即可~');
+}
+
+function goToXHS() {
+  copyToClipboard(window._shareText);
+  showToast('配文已复制！正在跳转小红书...');
+  setTimeout(function() {
+    window.location.href = 'xhsdiscover://';
+  }, 600);
+}
+
+function nativeShare() {
+  if (navigator.share) {
+    navigator.share({
+      title: '12朵致命妖花测试',
+      text: window._shareText,
+      url: window.location.href
+    }).catch(function(){});
+  } else {
+    copyToClipboard(window._shareText);
+    showToast('已复制！粘贴分享给好友即可~');
+  }
 }
 
 function copyResult() {
@@ -1561,11 +1657,9 @@ function showToast(msg) {
 
     <div id="shareCard" class="share-card"></div>
 
-    <div class="share-card-tip">截图或长按花朵图片保存，分享到朋友圈</div>
+    <div id="shareGuide" class="share-guide"></div>
 
-    <div class="share-actions">
-      <button class="share-action-btn" onclick="copyShareText()">📋 复制文字发朋友圈</button>
-    </div>
+    <div id="shareActions" class="share-actions"></div>
   </div>
 </div>
 
