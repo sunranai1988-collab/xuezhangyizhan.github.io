@@ -589,38 +589,55 @@
     border-radius: 8px;
   }
 
-  .share-platforms {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 18px;
+  .share-image {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 16px;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid rgba(157,78,221,0.3);
+    box-shadow: 0 4px 20px rgba(157,78,221,0.2);
   }
-  .share-item {
+
+  .share-loading {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    padding: 40px 0;
+  }
+  .loading-spinner {
+    width: 40px; height: 40px;
+    border: 4px solid rgba(157,78,221,0.2);
+    border-top-color: #ff6b9d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .loading-text {
+    font-size: 14px;
+    color: #999;
+  }
+
+  .share-actions {
+    margin-top: 12px;
+    text-align: center;
+  }
+  .share-action-btn {
+    background: linear-gradient(135deg, #9d4edd, #ff4d6d);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 32px;
+    font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
+    box-shadow: 0 4px 15px rgba(157,78,221,0.3);
     transition: transform 0.2s ease;
   }
-  .share-item:active { transform: scale(0.92); }
-  .share-icon {
-    width: 48px; height: 48px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-  .share-icon.wechat { background: #07c160; }
-  .share-icon.xhs { background: #ff2442; }
-  .share-icon.moments { background: #5ac8fa; }
-  .share-icon.copy { background: #ff6b9d; }
-  .share-label {
-    font-size: 11px;
-    color: #666;
-  }
+  .share-action-btn:active { transform: scale(0.95); }
 
   .share-tip {
     background: #fff8e6;
@@ -1356,73 +1373,150 @@ function shareResult() {
     '你也来测测吧~\n' + window.location.href;
 
   window._shareText = shareText;
+  window._currentResult = r;
 
   var overlay = document.getElementById('shareOverlay');
-  var preview = document.getElementById('sharePreview');
-
-  var scorePercent = Math.round((totalScore / (questions.length * 4)) * 100);
-  var tagsHtml = r.tags.map(function(t) { return '#' + t; }).join(' ');
-  preview.innerHTML =
-    '<div class="share-card-preview">' +
-      '<div class="share-card-flower">' + r.emoji + '</div>' +
-      '<div class="share-card-type">' + r.type + '</div>' +
-      '<div class="share-card-tagline">「 ' + r.tagline + ' 」</div>' +
-      '<div class="share-card-tags">' + tagsHtml + '</div>' +
-      '<div class="share-card-quote">" ' + r.quote + ' "</div>' +
-      '<div class="share-card-bottom">' +
-        '<div class="share-card-score">契合度 ' + scorePercent + '%</div>' +
-        '<div class="share-card-link">12朵致命妖花测试</div>' +
-      '</div>' +
-    '</div>';
-
   overlay.classList.add('active');
+
+  generateShareImage();
+}
+
+function generateShareImage() {
+  var r = window._currentResult;
+  var scorePercent = Math.round((totalScore / (questions.length * 4)) * 100);
+  var canvas = document.getElementById('shareCanvas');
+  var ctx = canvas.getContext('2d');
+  var width = 600;
+  var height = 800;
+  canvas.width = width;
+  canvas.height = height;
+
+  ctx.fillStyle = '#0d0a0f';
+  ctx.fillRect(0, 0, width, height);
+
+  var gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, 'rgba(157,78,221,0.15)');
+  gradient.addColorStop(1, 'rgba(255,77,109,0.1)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.beginPath();
+  ctx.arc(width/2, 0, 350, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(157,78,221,0.08)';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(width/2, height, 250, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,77,109,0.05)';
+  ctx.fill();
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(width/2, 200, 100, 0, Math.PI * 2);
+  ctx.clip();
+
+  var flowerGrad = ctx.createLinearGradient(width/2-80, 200-80, width/2+80, 200+80);
+  flowerGrad.addColorStop(0, 'rgba(157,78,221,0.3)');
+  flowerGrad.addColorStop(1, 'rgba(255,77,109,0.3)');
+  ctx.fillStyle = flowerGrad;
+  ctx.fillRect(width/2-100, 100, 200, 200);
+
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  var imgSrc = r.emoji.match(/src="([^"]+)"/)[1];
+  img.onload = function() {
+    ctx.drawImage(img, width/2-85, 115, 170, 170);
+    
+    ctx.restore();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 52px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(r.type, width/2, 350);
+
+    ctx.fillStyle = '#ff6b9d';
+    ctx.font = '28px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('「 ' + r.tagline + ' 」', width/2, 400);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '24px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText(r.tags.join('  '), width/2, 450);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = 'italic 28px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('" ' + r.quote + ' "', width/2, 520);
+
+    ctx.beginPath();
+    ctx.moveTo(100, 560);
+    ctx.lineTo(width-100, 560);
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#ff6b9d';
+    ctx.font = 'bold 32px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('契合度 ' + scorePercent + '%', width/2, 620);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '26px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('12朵致命妖花测试', width/2, 670);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '22px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('长按保存图片分享到朋友圈', width/2, 750);
+
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    document.getElementById('shareImage').src = dataUrl;
+    document.getElementById('shareImageContainer').style.display = 'block';
+  };
+  img.onerror = function() {
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '48px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🌸', width/2, 220);
+    ctx.restore();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 52px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(r.type, width/2, 350);
+    ctx.fillStyle = '#ff6b9d';
+    ctx.font = '28px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('「 ' + r.tagline + ' 」', width/2, 400);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '24px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText(r.tags.join('  '), width/2, 450);
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = 'italic 28px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('" ' + r.quote + ' "', width/2, 520);
+    ctx.beginPath();
+    ctx.moveTo(100, 560);
+    ctx.lineTo(width-100, 560);
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#ff6b9d';
+    ctx.font = 'bold 32px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('契合度 ' + scorePercent + '%', width/2, 620);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '26px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('12朵致命妖花测试', width/2, 670);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '22px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('长按保存图片分享到朋友圈', width/2, 750);
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    document.getElementById('shareImage').src = dataUrl;
+    document.getElementById('shareImageContainer').style.display = 'block';
+  };
+  img.src = imgSrc;
 }
 
 function closeShare() {
   document.getElementById('shareOverlay').classList.remove('active');
 }
 
-function shareToWechat() {
-  var text = window._shareText;
-  if (isWechat()) {
-    copyToClipboard(text);
-    showToast('已复制！点击右上角「···」→ 发送给朋友，粘贴即可');
-    return;
-  }
-  if (navigator.share) {
-    navigator.share({ title: '12朵致命妖花测试', text: text, url: window.location.href }).catch(function(){});
-  } else {
-    copyToClipboard(text);
-    showToast('已复制结果！打开微信粘贴给好友即可~');
-    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
-  }
-}
-
-function shareToXHS() {
-  var text = window._shareText;
-  copyToClipboard(text);
-  if (isWechat()) {
-    showToast('已复制！点击右上角「···」在浏览器打开，再去小红书粘贴');
-    return;
-  }
-  showToast('已复制结果！打开小红书私信粘贴即可~');
-  setTimeout(function(){ window.location.href = 'xhsdiscover://'; }, 800);
-}
-
-function shareToMoments() {
-  var text = window._shareText;
-  if (isWechat()) {
-    copyToClipboard(text);
-    showToast('已复制！长按上方卡片保存图片，点右上角「···」→ 分享到朋友圈');
-    return;
-  }
-  if (navigator.share) {
-    navigator.share({ title: '12朵致命妖花测试', text: text, url: window.location.href }).catch(function(){});
-  } else {
-    copyToClipboard(text);
-    showToast('已复制结果！打开朋友圈粘贴即可~');
-    setTimeout(function(){ window.location.href = 'weixin://'; }, 800);
-  }
+function copyShareText() {
+  copyToClipboard(window._shareText);
+  showToast('已复制结果文字！');
 }
 
 function copyResult() {
@@ -1467,6 +1561,8 @@ function showToast(msg) {
 }
 </script>
 
+<canvas id="shareCanvas" style="display:none;"></canvas>
+
 <div class="share-overlay" id="shareOverlay" onclick="if(event.target===this)closeShare()">
   <div class="share-modal">
     <div class="share-header">
@@ -1474,30 +1570,19 @@ function showToast(msg) {
       <button class="share-close" onclick="closeShare()">✕</button>
     </div>
 
-    <div class="share-preview" id="sharePreview"></div>
-
-    <div class="share-card-tip">长按上方卡片可保存图片，截图分享到朋友圈</div>
-
-    <div class="share-platforms">
-      <div class="share-item" onclick="shareToWechat()">
-        <div class="share-icon wechat">💬</div>
-        <div class="share-label">微信好友</div>
-      </div>
-      <div class="share-item" onclick="shareToXHS()">
-        <div class="share-icon xhs">📕</div>
-        <div class="share-label">小红书私信</div>
-      </div>
-      <div class="share-item" onclick="shareToMoments()">
-        <div class="share-icon moments">🌐</div>
-        <div class="share-label">朋友圈</div>
-      </div>
-      <div class="share-item" onclick="copyResult()">
-        <div class="share-icon copy">📋</div>
-        <div class="share-label">复制文字</div>
-      </div>
+    <div id="shareImageContainer" style="display:none;">
+      <img id="shareImage" class="share-image" alt="分享海报"/>
     </div>
-    <div class="share-tip">
-      💡 先复制文字，再长按卡片保存图片，截图+文字一起分享效果更好~
+
+    <div class="share-loading" id="shareLoading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">正在生成分享图片...</div>
+    </div>
+
+    <div class="share-card-tip">长按图片保存到相册，即可分享到朋友圈</div>
+
+    <div class="share-actions">
+      <button class="share-action-btn" onclick="copyShareText()">📋 复制文字</button>
     </div>
   </div>
 </div>
