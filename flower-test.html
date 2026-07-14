@@ -514,16 +514,80 @@
   }
 
   .share-preview {
-    background: #f8f0f4;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 18px;
-    font-size: 13px;
-    color: #666;
-    line-height: 1.6;
-    border: 1px dashed #d0b0c0;
+    margin-bottom: 12px;
   }
   .share-preview strong { color: #ff6b9d; }
+
+  .share-card-preview {
+    background: linear-gradient(135deg, #1a0a1e, #0d0a0f);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    border: 1px solid rgba(157,78,221,0.3);
+    box-shadow: 0 4px 30px rgba(157,78,221,0.15);
+  }
+  .share-card-flower {
+    width: 100px; height: 100px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(157,78,221,0.2), rgba(255,77,109,0.2));
+    padding: 6px;
+  }
+  .share-card-flower img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .share-card-type {
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .share-card-tagline {
+    font-size: 13px;
+    color: #ff6b9d;
+    margin-bottom: 10px;
+  }
+  .share-card-tags {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .share-card-quote {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    font-style: italic;
+    margin-bottom: 16px;
+    line-height: 1.6;
+    padding: 0 10px;
+  }
+  .share-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 12px;
+    font-size: 12px;
+  }
+  .share-card-score {
+    color: #ff6b9d;
+    font-weight: bold;
+  }
+  .share-card-link {
+    color: rgba(255,255,255,0.4);
+  }
+  .share-card-tip {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 14px;
+    padding: 8px;
+    background: #f0e8f0;
+    border-radius: 8px;
+  }
 
   .share-platforms {
     display: grid;
@@ -778,7 +842,7 @@ var questions = [
 var Q = {
   anemone: {
     type: "彼岸花",
-    emoji: '<img src="anemone.png" alt="彼岸花"/>',
+    emoji: '<img src="anemone.jpg" alt="彼岸花"/>',
     tagline: "花开彼岸，生死相隔",
     tags: ["冷艳绝决", "爱恨分明", "神秘莫测", "外冷内热"],
     quote: "见花不见叶，见叶不见花，这是我独有的浪漫。",
@@ -802,7 +866,7 @@ var Q = {
   },
   mandala: {
     type: "曼陀罗",
-    emoji: '<img src="mandala.png" alt="曼陀罗"/>',
+    emoji: '<img src="mandala.jpg" alt="曼陀罗"/>',
     tagline: "迷幻魅惑，致命诱惑",
     tags: ["魅惑众生", "掌控欲强", "自信张扬", "游戏人间"],
     quote: "我不是在诱惑你，是你心甘情愿走进我的花园。",
@@ -826,7 +890,7 @@ var Q = {
   },
   poppy: {
     type: "罂粟",
-    emoji: '<img src="poppy.png" alt="罂粟"/>',
+    emoji: '<img src="poppy.jpg" alt="罂粟"/>',
     tagline: "让人上瘾的致命温柔",
     tags: ["温柔陷阱", "撩拨高手", "欲擒故纵", "让人上瘾"],
     quote: "明知道我有毒，你还是戒不掉，对吗？",
@@ -850,7 +914,7 @@ var Q = {
   },
   oleander: {
     type: "夹竹桃",
-    emoji: '<img src="oleander.png" alt="夹竹桃"/>',
+    emoji: '<img src="oleander.jpg" alt="夹竹桃"/>',
     tagline: "美艳外表下的剧毒",
     tags: ["外表柔弱", "内心强大", "不好招惹", "以柔克刚"],
     quote: "我看起来无害，那是因为你还没惹到我。",
@@ -874,7 +938,7 @@ var Q = {
   },
   aconite: {
     type: "乌头",
-    emoji: '<img src="aconite.png" alt="乌头"/>',
+    emoji: '<img src="aconite.jpg" alt="乌头"/>',
     tagline: "深藏不露的致命剧毒",
     tags: ["低调隐忍", "智慧超群", "深藏不露", "一击致命"],
     quote: "你以为我普通，是因为你还没见识过我的厉害。",
@@ -898,7 +962,7 @@ var Q = {
   },
   lily: {
     type: "铃兰",
-    emoji: '<img src="lily.png" alt="铃兰"/>',
+    emoji: '<img src="lily.jpg" alt="铃兰"/>',
     tagline: "纯洁外表下的致命诱惑",
     tags: ["气质干净", "外纯内刚", "清醒独立", "温柔坚定"],
     quote: "我温柔，但不代表我好欺负。",
@@ -922,7 +986,7 @@ var Q = {
   },
   colchicum: {
     type: "秋水仙",
-    emoji: '<img src="colchicum.png" alt="秋水仙"/>',
+    emoji: '<img src="colchicum.jpg" alt="秋水仙"/>',
     tagline: "迟来的致命美丽",
     tags: ["忧郁文艺", "细腻敏感", "执念很深", "浪漫至死"],
     quote: "秋天开的花，也有属于自己的春天。",
@@ -946,7 +1010,7 @@ var Q = {
   },
   wolfsbane: {
     type: "狼毒",
-    emoji: '<img src="wolfsbane.png" alt="狼毒"/>',
+    emoji: '<img src="wolfsbane.jpg" alt="狼毒"/>',
     tagline: "致命的守护与占有",
     tags: ["占有欲强", "专一忠诚", "护短狂魔", "为爱偏执"],
     quote: "你是我的，谁也抢不走，包括你自己。",
@@ -970,7 +1034,7 @@ var Q = {
   },
   alocasia: {
     type: "滴水观音",
-    emoji: '<img src="alocasia.png" alt="滴水观音"/>',
+    emoji: '<img src="alocasia.jpg" alt="滴水观音"/>',
     tagline: "温和外表下的暗藏杀机",
     tags: ["随和佛系", "内心清醒", "隐忍有度", "大智若愚"],
     quote: "我不发火，不代表我没脾气。",
@@ -994,7 +1058,7 @@ var Q = {
   },
   poinsettia: {
     type: "一品红",
-    emoji: '<img src="poinsettia.png" alt="一品红"/>',
+    emoji: '<img src="poinsettia.jpg" alt="一品红"/>',
     tagline: "热情似火的致命诱惑",
     tags: ["热情奔放", "自信耀眼", "直率坦荡", "活力满满"],
     quote: "我就是这么耀眼，不喜欢的话，别看就好了。",
@@ -1018,7 +1082,7 @@ var Q = {
   },
   azalea: {
     type: "黄花杜鹃",
-    emoji: '<img src="azalea.png" alt="黄花杜鹃"/>',
+    emoji: '<img src="azalea.jpg" alt="黄花杜鹃"/>',
     tagline: "美丽却易碎的致命诱惑",
     tags: ["温柔治愈", "惹人怜惜", "外表柔弱", "内心坚强"],
     quote: "我看起来易碎，但你不知道我经历了多少才绽放。",
@@ -1042,7 +1106,7 @@ var Q = {
   },
   milkweed: {
     type: "马利筋",
-    emoji: '<img src="milkweed.png" alt="马利筋"/>',
+    emoji: '<img src="milkweed.jpg" alt="马利筋"/>',
     tagline: "坚韧不拔的致命生命力",
     tags: ["生命力强", "乐观向上", "善良温暖", "越挫越勇"],
     quote: "越是狂风暴雨，我开得越灿烂。",
@@ -1067,18 +1131,18 @@ var Q = {
 };
 
 var flowerImages = {
-  anemone: 'anemone.png',
-  mandala: 'mandala.png',
-  poppy: 'poppy.png',
-  oleander: 'oleander.png',
-  aconite: 'aconite.png',
-  lily: 'lily.png',
-  colchicum: 'colchicum.png',
-  wolfsbane: 'wolfsbane.png',
-  alocasia: 'alocasia.png',
-  poinsettia: 'poinsettia.png',
-  azalea: 'azalea.png',
-  milkweed: 'milkweed.png'
+  anemone: 'anemone.jpg',
+  mandala: 'mandala.jpg',
+  poppy: 'poppy.jpg',
+  oleander: 'oleander.jpg',
+  aconite: 'aconite.jpg',
+  lily: 'lily.jpg',
+  colchicum: 'colchicum.jpg',
+  wolfsbane: 'wolfsbane.jpg',
+  alocasia: 'alocasia.jpg',
+  poinsettia: 'poinsettia.jpg',
+  azalea: 'azalea.jpg',
+  milkweed: 'milkweed.jpg'
 };
 
 function preloadImages() {
@@ -1288,25 +1352,28 @@ function isWechat() {
 function shareResult() {
   var r = window._resultData || Q[getResultKey(totalScore)];
   var shareText = '我在「12朵致命妖花测试」中测出了【' + r.type + '】！\n\n' +
-    r.tagline + '\n\n' +
+    r.tagline + '\n\n' + r.quote + '\n\n' +
     '你也来测测吧~\n' + window.location.href;
 
   window._shareText = shareText;
 
   var overlay = document.getElementById('shareOverlay');
-  var normalPanel = document.getElementById('shareNormalPanel');
-  var wechatPanel = document.getElementById('shareWechatPanel');
   var preview = document.getElementById('sharePreview');
 
-  preview.innerHTML = '我在「12朵致命妖花测试」中测出了<strong>【' + r.type + '】</strong>！<br>' + r.tagline + '<br>你也来测测吧~';
-
-  if (isWechat()) {
-    normalPanel.style.display = 'none';
-    wechatPanel.style.display = 'block';
-  } else {
-    normalPanel.style.display = 'block';
-    wechatPanel.style.display = 'none';
-  }
+  var scorePercent = Math.round((totalScore / (questions.length * 4)) * 100);
+  var tagsHtml = r.tags.map(function(t) { return '#' + t; }).join(' ');
+  preview.innerHTML =
+    '<div class="share-card-preview">' +
+      '<div class="share-card-flower">' + r.emoji + '</div>' +
+      '<div class="share-card-type">' + r.type + '</div>' +
+      '<div class="share-card-tagline">「 ' + r.tagline + ' 」</div>' +
+      '<div class="share-card-tags">' + tagsHtml + '</div>' +
+      '<div class="share-card-quote">" ' + r.quote + ' "</div>' +
+      '<div class="share-card-bottom">' +
+        '<div class="share-card-score">契合度 ' + scorePercent + '%</div>' +
+        '<div class="share-card-link">12朵致命妖花测试</div>' +
+      '</div>' +
+    '</div>';
 
   overlay.classList.add('active');
 }
@@ -1318,15 +1385,12 @@ function closeShare() {
 function shareToWechat() {
   var text = window._shareText;
   if (isWechat()) {
-    showToast('请点击右上角「...」选择发送给朋友');
+    copyToClipboard(text);
+    showToast('已复制！点击右上角「···」→ 发送给朋友，粘贴即可');
     return;
   }
   if (navigator.share) {
-    navigator.share({
-      title: '12朵致命妖花测试',
-      text: text,
-      url: window.location.href
-    }).catch(function(){});
+    navigator.share({ title: '12朵致命妖花测试', text: text, url: window.location.href }).catch(function(){});
   } else {
     copyToClipboard(text);
     showToast('已复制结果！打开微信粘贴给好友即可~');
@@ -1336,12 +1400,11 @@ function shareToWechat() {
 
 function shareToXHS() {
   var text = window._shareText;
+  copyToClipboard(text);
   if (isWechat()) {
-    copyToClipboard(text);
-    showToast('已复制！点击右上角「...」选择在浏览器打开，再去小红书粘贴');
+    showToast('已复制！点击右上角「···」在浏览器打开，再去小红书粘贴');
     return;
   }
-  copyToClipboard(text);
   showToast('已复制结果！打开小红书私信粘贴即可~');
   setTimeout(function(){ window.location.href = 'xhsdiscover://'; }, 800);
 }
@@ -1349,15 +1412,12 @@ function shareToXHS() {
 function shareToMoments() {
   var text = window._shareText;
   if (isWechat()) {
-    showToast('请点击右上角「...」选择分享到朋友圈');
+    copyToClipboard(text);
+    showToast('已复制！长按上方卡片保存图片，点右上角「···」→ 分享到朋友圈');
     return;
   }
   if (navigator.share) {
-    navigator.share({
-      title: '12朵致命妖花测试',
-      text: text,
-      url: window.location.href
-    }).catch(function(){});
+    navigator.share({ title: '12朵致命妖花测试', text: text, url: window.location.href }).catch(function(){});
   } else {
     copyToClipboard(text);
     showToast('已复制结果！打开朋友圈粘贴即可~');
@@ -1416,52 +1476,28 @@ function showToast(msg) {
 
     <div class="share-preview" id="sharePreview"></div>
 
-    <div id="shareNormalPanel">
-      <div class="share-platforms">
-        <div class="share-item" onclick="shareToWechat()">
-          <div class="share-icon wechat">💬</div>
-          <div class="share-label">微信好友</div>
-        </div>
-        <div class="share-item" onclick="shareToXHS()">
-          <div class="share-icon xhs">📕</div>
-          <div class="share-label">小红书私信</div>
-        </div>
-        <div class="share-item" onclick="shareToMoments()">
-          <div class="share-icon moments">🌐</div>
-          <div class="share-label">朋友圈</div>
-        </div>
-        <div class="share-item" onclick="copyResult()">
-          <div class="share-icon copy">📋</div>
-          <div class="share-label">复制文字</div>
-        </div>
+    <div class="share-card-tip">长按上方卡片可保存图片，截图分享到朋友圈</div>
+
+    <div class="share-platforms">
+      <div class="share-item" onclick="shareToWechat()">
+        <div class="share-icon wechat">💬</div>
+        <div class="share-label">微信好友</div>
       </div>
-      <div class="share-tip">
-        💡 提示：点击后会自动复制结果文字，跳转到对应App后粘贴即可分享。
+      <div class="share-item" onclick="shareToXHS()">
+        <div class="share-icon xhs">📕</div>
+        <div class="share-label">小红书私信</div>
+      </div>
+      <div class="share-item" onclick="shareToMoments()">
+        <div class="share-icon moments">🌐</div>
+        <div class="share-label">朋友圈</div>
+      </div>
+      <div class="share-item" onclick="copyResult()">
+        <div class="share-icon copy">📋</div>
+        <div class="share-label">复制文字</div>
       </div>
     </div>
-
-    <div id="shareWechatPanel" style="display:none;">
-      <div class="wechat-share-guide">
-        <div class="wechat-guide-title">📢 分享给朋友</div>
-        <div class="wechat-guide-item">
-          <span class="wechat-step">1</span>
-          <span>点击右上角 <strong>「···」</strong></span>
-        </div>
-        <div class="wechat-guide-item">
-          <span class="wechat-step">2</span>
-          <span>选择「<strong>发送给朋友</strong>」或「<strong>分享到朋友圈</strong>」</span>
-        </div>
-        <div class="wechat-guide-item">
-          <span class="wechat-step">3</span>
-          <span>粘贴结果文字 + 截图分享</span>
-        </div>
-      </div>
-      <div class="wechat-share-copy" onclick="copyResult()">
-        <button class="wechat-copy-btn">📋 一键复制结果文字</button>
-      </div>
-      <div class="share-tip">
-        💡 先复制结果文字，再点右上角分享，粘贴给朋友更方便哦~
-      </div>
+    <div class="share-tip">
+      💡 先复制文字，再长按卡片保存图片，截图+文字一起分享效果更好~
     </div>
   </div>
 </div>
